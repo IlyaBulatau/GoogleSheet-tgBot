@@ -1,19 +1,33 @@
 from aiogram import Bot, Dispatcher, Router
 from aiogram.types import Message
+from aiogram.fsm.storage.redis import RedisStorage, Redis
 
 import asyncio
 
 from config import BaseConfig
 from database.connect import create_database, session, engine
 from database.models import Base, User
-from handlers.handlers import router
+
+from handlers.commands import router
+from handlers.fsm.process import router as fsm_router
+from handlers.create_table.handlers import router as create_table_router
+
+from documents.menu import set_menu
+from config import config
 
 async def main():
+    redis = Redis(host=config.REDIS_HOST)
+    storage = RedisStorage(redis)
 
     bot = Bot(token=BaseConfig.TOKEN)
-    ds = Dispatcher()
+    ds = Dispatcher(storage=storage)
 
-    ds.include_router(router)
+    ds.include_routers(router, 
+                        fsm_router,
+                        create_table_router,
+                        )
+    
+    await bot(set_menu())
 
     await ds.start_polling(bot)
 
