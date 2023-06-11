@@ -3,10 +3,12 @@ from aiogram.filters import Text
 from aiogram import Router
 from aiogram.fsm.context import FSMContext
 
-from documents.documents import CALLBACK
-from handlers.fsm.states import CreateTableForm
+from documents.documents import CALLBACK, CONNECT_STATUS
+from handlers.fsm.states import CreateTableForm, ModificationTableForm
 from services.create_table import create
+from services.connect_to_table import table_connect
 from database.models import User
+from config import config
 
 
 router = Router()
@@ -32,6 +34,31 @@ async def process_get_name(message: Message, state: FSMContext):
         user = User.get_user_by_id(message.from_user.id)
         user.save_email(email=email)
         await message.answer(text=f'Таблица создана\nСсылка: {url}')
+        await message.answer(text='Что будем делать с таблицей?')
         return
     
     await message.answer(text='Email который вы отправили не существуют\nПопробуйте заново /work')
+
+@router.message(ModificationTableForm.table_url)
+async def process_get_table_url(message: Message, state: FSMContext):
+    await state.update_data(table_url=message.text)
+    data = await state.get_data()
+
+    connect = table_connect(data['table_url'])
+
+    if connect == CONNECT_STATUS['Invalid']:
+        await message.answer(text='Вы передали не корректный URL')
+        return
+    
+    elif connect == CONNECT_STATUS['Api Error']:
+        await message.answer(text=f'Похоже у меня нету доступа к изменению этой таблицы\n\
+Что бы я мог модифицировать ее, пожалуста предоставте мне доступ\n\
+Для этого добавте мой email к пользователям имеющим доступ к таблице\n\
+Mой Emai: {config.BOT_EMAIL}')
+        await state.clear()
+        return
+    
+    await state.clear()
+    await message.answer(text='Что будем делать с таблицей?')
+
+

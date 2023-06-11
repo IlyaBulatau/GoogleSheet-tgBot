@@ -6,6 +6,7 @@ class BaseConfig:
     env.read_env()
 
     TOKEN = env('TOKEN')
+    BOT_EMAIL=env('BOT_EMAIL')
 
     _status = 'dev'
 

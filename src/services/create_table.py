@@ -1,9 +1,6 @@
-import gspread as gs
 from gspread.exceptions import APIError
+from services.client import client
 
-from database.models import User
-
-client = gs.service_account(filename='auth.json') 
 
 def create(email, name):
     try:
