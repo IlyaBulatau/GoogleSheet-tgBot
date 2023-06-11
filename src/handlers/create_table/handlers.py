@@ -22,6 +22,18 @@ async def process_get_email(message: Message, state: FSMContext):
 
 @router.message(CreateTableForm.name)
 async def process_get_name(message: Message, state: FSMContext):
+    """
+    Принимает процесс работы после того как пользователь
+    ввел имя таблицы
+
+    Первым делом проверет валидный ли email отправил пользователь
+    проверяется в функции create путем обработки искючения которое бросат модуль gspread
+
+    Если email валидный сохраняет email в базе данных для того что бы пользовател не вводить его каждый раз
+    в последствии email можно будет удалить либо изменить
+
+    Запускает процесс работы с таблицей fsm который ожидает ввода действия с таблицей
+    """
     await state.update_data(name=message.text)
     data = await state.get_data()
     await state.clear()
@@ -44,6 +56,19 @@ async def process_get_name(message: Message, state: FSMContext):
 
 @router.message(ModificationTableForm.table_url)
 async def process_get_table_url(message: Message, state: FSMContext):
+    """
+    Принимает процесс работы после того как пользователь
+    отправил url таблицы которую хочет модифицировать
+
+    Первым делом проверет валидный ли url отправил пользователь
+    проверяется в функции table_connect путем обработки искючения которое бросат модуль gspread
+
+    Так же проверяет есть ли доступ боту к этой таблице
+    Если нету отправляет инструкцию как дать доступ боту вместе с BOT_EMAIL
+
+    Если url валидный запускает процесс работы с таблицу fsm который ожидает ввода действия с таблицей
+    """
+
     await state.update_data(table_url=message.text)
     data = await state.get_data()
 

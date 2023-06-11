@@ -8,6 +8,9 @@ from config import config
 from logger.logger import logger
 
 def create_database():
+    """
+    Создание таблицы БД
+    """
     connect = psycopg2.connect(
         database='postgres',
         user=config.DB_LOGIN,
@@ -26,7 +29,8 @@ def create_database():
         ...
     connect.close()
 
+# создание соединения с базой данных
 engine = create_engine(config.DB_URL, echo=True)
 session = scoped_session(sessionmaker(bind=engine, autoflush=False, autocommit=False))
 Base = declarative_base()
-Base.query = session.query_property()
+Base.query = session.query_property() # для того что бы можно было обращатся к моделям напрямую

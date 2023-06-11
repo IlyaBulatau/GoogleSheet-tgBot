@@ -4,6 +4,9 @@ from gspread.client import Spreadsheet
 from services.client import client
 
 class ActionTable:
+    """
+    Обьект действий с таблицей
+    """
     
     def __init__(self, url: str, data: str):
         self.client: cl = client

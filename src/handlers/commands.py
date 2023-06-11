@@ -26,6 +26,11 @@ async def process_command_cancel(message: Message, state: FSMContext):
 
 @router.message(Command(commands=['work']))
 async def procces_command_work(message: Message, state: FSMContext):
+    """
+    Комадна для старка работы
+    Предлагает выбор между - Создание таблицы или Модификации имеющейся
+    Запускает fsm для выбора
+    """
     await state.set_state(WorkForm.method)
     await message.answer(text='Выберите что будем делать', reply_markup=keyboards.create_kb_for_choice_methods_work())
 

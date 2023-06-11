@@ -24,6 +24,7 @@ class User(Base, BaseModel):
     def save_email(self, **kwargs):
         for k, v in kwargs.items():
             setattr(self, k, v)
+            logger.info(f'User with {self.tg_id} add email: {v}')
         session.commit()
 
     @classmethod

@@ -13,6 +13,14 @@ router = Router()
 
 @router.callback_query(WorkForm.method, Text(text=[CALLBACK['create_table']]))
 async def procces_start_create_table(callback: CallbackQuery, state: FSMContext):
+    """
+    Принимает процесс после того как пользователь
+    нажал на кнопку "Создать таблицу" 
+
+    Проверяет есть email текущего пользователя
+    Если нету то предлагает его отправить
+    Если есть то записывает email в fsm и предлагает ввести имя таблицы
+    """
     await state.update_data(method=callback.data)
     await state.clear()
 
@@ -29,6 +37,13 @@ async def procces_start_create_table(callback: CallbackQuery, state: FSMContext)
 
 @router.callback_query(WorkForm.method, Text(text=[CALLBACK['mod_table']]))
 async def process_start_mod_table(callback: CallbackQuery, state: FSMContext):
+    """
+    Принимает процесс после того как пользователь
+    нажал на кнопку "Создать таблицу" 
+
+    Просит у пользователя ссылку на таблицу
+    """
+
     await state.update_data(method=callback.data)
     await state.clear()
 

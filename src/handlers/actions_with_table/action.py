@@ -13,6 +13,11 @@ router = Router()
 
 @router.callback_query(Text(text=CALLBACK['insert_row']), ActionTableForm.action)
 async def process_insert_row_in_table(callback: CallbackQuery, state: FSMContext):
+    """
+    Принимает процесс после того как пользователь выбрал действия с таблицей нажав кнопку "Добавить строку в начало"
+
+    Устанавливает состояния оживадания ввода значения для таблицы
+    """
     await state.update_data(action=callback.data)
     await state.set_state(ActionTableForm.values)
 
@@ -20,6 +25,11 @@ async def process_insert_row_in_table(callback: CallbackQuery, state: FSMContext
 
 @router.callback_query(Text(text=CALLBACK['append_row']), ActionTableForm.action)
 async def process_insert_row_in_table(callback: CallbackQuery, state: FSMContext):
+    """
+    Принимает процесс после того как пользователь выбрал действия с таблицей нажав кнопку "Добавить строку в конец"
+
+    Устанавливает состояния оживадания ввода значения для таблицы
+    """
     await state.update_data(action=callback.data)
     await state.set_state(ActionTableForm.values)
 
@@ -27,6 +37,16 @@ async def process_insert_row_in_table(callback: CallbackQuery, state: FSMContext
 
 @router.message(ActionTableForm.values)
 async def process_add_row_in_table(message: Message, state: FSMContext):
+    """
+    Принимает процесс после того как пользователь ввел данные для занесения в таблицу
+
+    Создает обьект действий с таблицей -  ActionTable 
+
+    Извлекает из fsm данные о том какое действие выбрал юзер
+    и в зависимсти от выбора выполняет действие с таблицей
+
+    После выполнения действия включает fsm ожидания для выбора дальнейших действий с таблицей
+    """
     await state.update_data(values=message.text)
     data = await state.get_data()
 
