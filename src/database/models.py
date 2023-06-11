@@ -29,7 +29,7 @@ class User(Base, BaseModel):
         session.commit()
 
     def save(self):
-        super(User, self).save(self)
+        super(User, self).save()
         logger.warning(f'ADD NEW USER WITH USERNAME: {self.username}, ID: {self.tg_id}')
 
     @classmethod
@@ -43,4 +43,15 @@ class Table(Base, BaseModel):
     id = db.Column(db.BigInteger(), primary_key=True)
     url = db.Column(db.String(), nullable=False)
     user_tg_id = db.Column(db.BigInteger(), db.ForeignKey('users.tg_id'))
+
+    def save(self):
+        if self.is_unique_table(self.url):
+            super(Table, self).save()
+            logger.warning(f'USER BY ID {self.user_tg_id} CREATE NEW TABLE WITH URL {self.url}')
+
+    @classmethod
+    def is_unique_table(cls, url):
+        table = cls.query.filter(cls.url == url).first()
+        return table == None
+
     

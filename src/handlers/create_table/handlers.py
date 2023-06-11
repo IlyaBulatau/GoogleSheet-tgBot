@@ -7,7 +7,7 @@ from documents.documents import CALLBACK, CONNECT_STATUS
 from handlers.fsm.states import CreateTableForm, ModificationTableForm, ActionTableForm
 from services.create_table import create
 from services.connect_to_table import table_connect
-from database.models import User
+from database.models import User, Table
 from config import config
 from keyboards.keyboards import create_kb_for_table_action
 
@@ -45,6 +45,7 @@ async def process_get_name(message: Message, state: FSMContext):
     if url:
         user = User.get_user_by_id(message.from_user.id)
         user.save_email(email=email)
+        Table(url=url, user_tg_id=user.tg_id).save()
         await message.answer(text=f'Таблица создана\nСсылка: {url}')
 
         await state.set_state(ActionTableForm.action)
@@ -89,6 +90,7 @@ Mой Emai: {config.BOT_EMAIL}')
     await state.clear()
     await state.set_state(ActionTableForm.action)
     await state.update_data(table_url=connect)
+    Table(url=connect, user_tg_id=message.from_user.id).save()
     await message.answer(text='Процесс работы с таблицей запущен для выхода из процесса щелкните /cancel/n/nЧто будем делать с таблицей?', reply_markup=create_kb_for_table_action())
 
 
