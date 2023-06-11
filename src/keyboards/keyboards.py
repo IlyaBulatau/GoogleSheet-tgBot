@@ -19,3 +19,16 @@ def create_kb_for_choice_methods_work():
     kb.row(*buttons, width=1)
 
     return kb.as_markup()
+
+def create_kb_for_table_action():
+
+    kb = InlineKeyboardBuilder()
+
+    buttons = [
+        InlineKeyboardButton(text='Добавить строку в начало', callback_data=CALLBACK['insert_row']),
+        InlineKeyboardButton(text='Добавить строку в конец', callback_data=CALLBACK['append_row'])
+    ]
+
+    kb.row(*buttons, width=1)
+
+    return kb.as_markup()

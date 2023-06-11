@@ -4,12 +4,12 @@ from aiogram import Router
 from aiogram.fsm.context import FSMContext
 
 from documents.documents import CALLBACK, CONNECT_STATUS
-from handlers.fsm.states import CreateTableForm, ModificationTableForm
+from handlers.fsm.states import CreateTableForm, ModificationTableForm, ActionTableForm
 from services.create_table import create
 from services.connect_to_table import table_connect
 from database.models import User
 from config import config
-
+from keyboards.keyboards import create_kb_for_table_action
 
 router = Router()
 
@@ -34,7 +34,8 @@ async def process_get_name(message: Message, state: FSMContext):
         user = User.get_user_by_id(message.from_user.id)
         user.save_email(email=email)
         await message.answer(text=f'Таблица создана\nСсылка: {url}')
-        await message.answer(text='Что будем делать с таблицей?')
+        await state.set_state(ActionTableForm.action)
+        await message.answer(text='Процесс работы с таблицей запущен для выхода из процесса щелкните /cancel/n/nЧто будем делать с таблицей?', reply_markup=create_kb_for_table_action())
         return
     
     await message.answer(text='Email который вы отправили не существуют\nПопробуйте заново /work')
@@ -59,6 +60,7 @@ Mой Emai: {config.BOT_EMAIL}')
         return
     
     await state.clear()
-    await message.answer(text='Что будем делать с таблицей?')
+    await state.set_state(ActionTableForm.action)
+    await message.answer(text='Процесс работы с таблицей запущен для выхода из процесса щелкните /cancel/n/nЧто будем делать с таблицей?', reply_markup=create_kb_for_table_action())
 
 

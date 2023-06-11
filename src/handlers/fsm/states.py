@@ -9,3 +9,7 @@ class CreateTableForm(StatesGroup):
 
 class ModificationTableForm(StatesGroup):
     table_url = State()
+
+class ActionTableForm(StatesGroup):
+    action = State()
+    values = State()
