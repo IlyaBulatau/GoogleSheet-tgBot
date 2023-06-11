@@ -6,7 +6,7 @@ from documents.documents import CONNECT_STATUS
 def table_connect(url):
     try:
         table = client.open_by_url(url)
-        return table
+        return url
     except NoValidUrlKeyFound as e:
         return CONNECT_STATUS['Invalid']
     except APIError as e:

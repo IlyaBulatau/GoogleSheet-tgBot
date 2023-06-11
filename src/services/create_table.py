@@ -7,6 +7,6 @@ def create(email, name):
         table = client.create(str(name))
         table.share(email_address=email, perm_type='user', role='writer')
         url = 'https://docs.google.com/spreadsheets/d/'+str(table.id)
-        return url
+        return table
     except APIError as e:
         return None

@@ -13,3 +13,4 @@ class ModificationTableForm(StatesGroup):
 class ActionTableForm(StatesGroup):
     action = State()
     values = State()
+    table_url = State()

@@ -34,7 +34,9 @@ async def process_get_name(message: Message, state: FSMContext):
         user = User.get_user_by_id(message.from_user.id)
         user.save_email(email=email)
         await message.answer(text=f'Таблица создана\nСсылка: {url}')
+
         await state.set_state(ActionTableForm.action)
+        await state.update_data(table_url=url)
         await message.answer(text='Процесс работы с таблицей запущен для выхода из процесса щелкните /cancel/n/nЧто будем делать с таблицей?', reply_markup=create_kb_for_table_action())
         return
     
@@ -61,6 +63,7 @@ Mой Emai: {config.BOT_EMAIL}')
     
     await state.clear()
     await state.set_state(ActionTableForm.action)
+    await state.update_data(table_url=connect)
     await message.answer(text='Процесс работы с таблицей запущен для выхода из процесса щелкните /cancel/n/nЧто будем делать с таблицей?', reply_markup=create_kb_for_table_action())
 
 
