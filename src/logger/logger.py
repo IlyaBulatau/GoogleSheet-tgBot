@@ -22,5 +22,10 @@ email_handler = SMTPHandler(
 email_handler.setLevel('WARNING')
 email_handler.setFormatter(formatter)
 
+console_handler = logging.StreamHandler()
+console_handler.setLevel('DEBUG')
+console_handler.setFormatter(formatter)
+
 logger.addHandler(file_handler)
 logger.addHandler(email_handler)
+logger.addHandler(console_handler)

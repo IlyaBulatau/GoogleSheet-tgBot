@@ -6,6 +6,7 @@ from aiogram.fsm.context import FSMContext
 from documents.documents import CALLBACK
 from handlers.fsm.states import CreateTableForm
 from services.create_table import create
+from database.models import User
 
 
 router = Router()
@@ -27,4 +28,10 @@ async def process_get_name(message: Message, state: FSMContext):
     table_name = data['name']
     
     url = create(email, table_name)
-    await message.answer(text=f'Таблица создана\nСсылка {url}')
+    if url:
+        user = User.get_user_by_id(message.from_user.id)
+        user.save_email(email=email)
+        await message.answer(text=f'Таблица создана\nСсылка: {url}')
+        return
+    
+    await message.answer(text='Email который вы отправили не существуют\nПопробуйте заново /work')
