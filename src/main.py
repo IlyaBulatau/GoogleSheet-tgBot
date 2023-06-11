@@ -1,5 +1,4 @@
-from aiogram import Bot, Dispatcher, Router
-from aiogram.types import Message
+from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.redis import RedisStorage, Redis
 
 import asyncio
@@ -14,6 +13,8 @@ from handlers.create_table.handlers import router as create_table_router
 
 from documents.menu import set_menu
 from config import config
+from logger.logger import logger
+
 
 async def main():
     redis = Redis(host=config.REDIS_HOST)
