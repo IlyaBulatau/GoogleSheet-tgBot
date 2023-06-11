@@ -9,6 +9,9 @@ class BaseConfig:
 
     _status = 'dev'
 
+    EMAIL_ADRESS = env('EMAIL_ADRESS')
+    EMAIL_PASSWORD = env('EMAIL_PASSWORD')
+
 class DevelopmentConfig(BaseConfig):
     
     DB_NAME = BaseConfig.env('DB_NAME_DEV')

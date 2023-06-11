@@ -35,5 +35,7 @@ async def main():
 if __name__ == "__main__":
     create_database()
     Base.metadata.create_all(bind=engine)
+    logger.warning('START BOT')
     asyncio.run(main())
     session.remove()
+    logger.warning('STOP BOT')

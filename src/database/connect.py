@@ -5,6 +5,8 @@ from sqlalchemy import create_engine
 
 from config import config
 
+from logger.logger import logger
+
 def create_database():
     connect = psycopg2.connect(
         database='postgres',
@@ -19,6 +21,7 @@ def create_database():
     try:
         sql_query = f'CREATE DATABASE {config.DB_NAME}'
         cursor.execute(sql_query)
+        logger.warning('CREATE DATABASE')
     except:
         ...
     connect.close()
