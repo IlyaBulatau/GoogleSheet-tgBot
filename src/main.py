@@ -5,7 +5,7 @@ import asyncio
 
 from config import BaseConfig
 from database.connect import create_database, session, engine
-from database.models import Base, User
+from database.models import Base, User, Table
 
 from handlers.commands import router
 from handlers.fsm.process import router as fsm_router
@@ -19,7 +19,7 @@ from logger.logger import logger
 
 async def main():
     redis = Redis(host=config.REDIS_HOST)
-    storage = RedisStorage(redis)
+    storage = RedisStorage(redis)   
 
     bot = Bot(token=BaseConfig.TOKEN)
     ds = Dispatcher(storage=storage)
