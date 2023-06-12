@@ -29,10 +29,12 @@ async def procces_start_create_table(callback: CallbackQuery, state: FSMContext)
         await state.update_data(email=user.email)
         await state.set_state(CreateTableForm.name)
         await callback.message.answer(text='Как назовем таблицу?')
+        await callback.answer()
         return
     
     await state.set_state(CreateTableForm.email)
     await callback.message.answer(text='Пожалуйста, отправте мне свой email для того\nчто бы я мог предоставить вам доступ к Google таблице')
+    await callback.answer()
 
 
 @router.callback_query(WorkForm.method, Text(text=[CALLBACK['mod_table']]))
@@ -49,3 +51,4 @@ async def process_start_mod_table(callback: CallbackQuery, state: FSMContext):
 
     await state.set_state(ModificationTableForm.table_url)
     await callback.message.answer(text='Пожалуйста, отправте мне ссылку на Google таблицу')
+    await callback.answer()

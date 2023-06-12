@@ -1,5 +1,6 @@
 from gspread import Worksheet, client as cl
 from gspread.client import Spreadsheet
+from gspread.exceptions import IncorrectCellLabel
 
 from services.client import client
 
@@ -22,6 +23,14 @@ class ActionTable:
     def append_row_in_table(self):
         data = self._serialazer()
         self.sheet.append_row(data)
+
+    def set_value_in_cell(self, cell, value):
+        try:
+            self.sheet.update_acell(cell, value)
+            return True
+        except IncorrectCellLabel as e:
+            return False
+
 
     def _serialazer(self):
         result = []

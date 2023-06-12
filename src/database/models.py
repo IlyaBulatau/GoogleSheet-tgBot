@@ -9,6 +9,7 @@ class BaseModel:
     def save(self):
         session.add(self)
         session.commit()
+        
 
 class User(Base, BaseModel):
     __tablename__ = 'users'
@@ -63,5 +64,4 @@ class Table(Base, BaseModel):
     def is_unique_table(cls, url):
         table = cls.query.filter(cls.url == url).first()
         return table == None
-
     

@@ -22,6 +22,7 @@ async def process_insert_row_in_table(callback: CallbackQuery, state: FSMContext
     await state.set_state(ActionTableForm.values)
 
     await callback.message.answer(text=INSTRUCTION['Use row'])
+    await callback.answer()
 
 @router.callback_query(Text(text=CALLBACK['append_row']), ActionTableForm.action)
 async def process_insert_row_in_table(callback: CallbackQuery, state: FSMContext):
@@ -34,6 +35,34 @@ async def process_insert_row_in_table(callback: CallbackQuery, state: FSMContext
     await state.set_state(ActionTableForm.values)
 
     await callback.message.answer(text=INSTRUCTION['Use row'])
+    await callback.answer()
+
+@router.callback_query(Text(text=CALLBACK['set_in_cell']), ActionTableForm.action)
+async def process_set_value_in_cell(callback: CallbackQuery, state: FSMContext):
+    """
+    Принимает процесс после того как пользователь выбрал действия с таблицей нажав кнопку "Вставить значение в ячейку"
+
+    Устанавливает состояния оживадания ввода ячейки таблицы
+    """
+
+    await state.update_data(action=callback.data)
+    await state.set_state(ActionTableForm.cell)
+
+    await callback.message.answer(text=INSTRUCTION['Set value in table'][0])
+    await callback.answer()
+
+
+@router.message(ActionTableForm.cell)
+async def process_get_cell(message: Message, state: FSMContext):
+    """
+    Ожидает ввода ячейки от пользователя
+
+    Устанавливает состояния ожидания ввода значения для ввода в ячейку
+    """
+    await state.update_data(cell=message.text)
+    await state.set_state(ActionTableForm.values)
+
+    await message.answer(text=INSTRUCTION['Set value in table'][1])
 
 @router.message(ActionTableForm.values)
 async def process_add_row_in_table(message: Message, state: FSMContext):
@@ -47,12 +76,14 @@ async def process_add_row_in_table(message: Message, state: FSMContext):
 
     После выполнения действия включает fsm ожидания для выбора дальнейших действий с таблицей
     """
+
     await state.update_data(values=message.text)
     data = await state.get_data()
 
-    action = data['action']
-    values = data['values']
-    table_url = data['table_url']
+    action = data.get('action', None)
+    cell = data.get('cell', None)
+    values = data.get('values', None)
+    table_url = data.get('table_url', None)
     table = ActionTable(table_url, values)
 
     if action == CALLBACK['insert_row']:
@@ -69,3 +100,13 @@ async def process_add_row_in_table(message: Message, state: FSMContext):
         await state.set_state(ActionTableForm.action)
         return
     
+    elif action == CALLBACK['set_in_cell']:
+        seccusfull = table.set_value_in_cell(cell, values)
+        if not seccusfull:
+            await message.answer(text='Вы ввели номер ячейки не корректно, введите еще раз\nДля завершения процесса шелкните /cancel')
+            await state.set_state(ActionTableForm.cell)
+            return
+        await message.answer(text='Готово!')
+        await message.answer(text='Продолжим?\nДля выхода из процесса щелкните /cancel', reply_markup=create_kb_for_table_action())
+        await state.set_state(ActionTableForm.action)
+        return

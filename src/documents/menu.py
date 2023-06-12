@@ -13,6 +13,10 @@ def set_menu():
         description='start working'
         ),
         BotCommand(
+        command='tables',
+        description='get my tables'
+        ),
+        BotCommand(
         command='cancel',
         description='end process',
         )

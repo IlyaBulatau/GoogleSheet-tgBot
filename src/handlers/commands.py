@@ -3,7 +3,7 @@ from aiogram.types import Message
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 
-from database.models import User
+from database.models import User, Table
 from documents.documents import TEXT
 from handlers.fsm.states import WorkForm
 from keyboards import keyboards
@@ -34,3 +34,9 @@ async def procces_command_work(message: Message, state: FSMContext):
     await state.set_state(WorkForm.method)
     await message.answer(text='Выберите что будем делать', reply_markup=keyboards.create_kb_for_choice_methods_work())
 
+@router.message(Command(commands=['tables']))
+async def process_command_tables(message: Message):
+    user = User.get_user_by_id(message.from_user.id)
+    response = '\n\n'.join([f'{table.name}: {table.url}'for table in user.tablse])
+
+    await message.answer(text=response)

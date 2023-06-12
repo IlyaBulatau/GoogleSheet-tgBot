@@ -26,7 +26,8 @@ def create_kb_for_table_action():
 
     buttons = [
         InlineKeyboardButton(text='Добавить строку в начало', callback_data=CALLBACK['insert_row']),
-        InlineKeyboardButton(text='Добавить строку в конец', callback_data=CALLBACK['append_row'])
+        InlineKeyboardButton(text='Добавить строку в конец', callback_data=CALLBACK['append_row']),
+        InlineKeyboardButton(text='Вставить значение в ячейку', callback_data=CALLBACK['set_in_cell']),
     ]
 
     kb.row(*buttons, width=1)

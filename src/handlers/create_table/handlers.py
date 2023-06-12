@@ -19,6 +19,7 @@ async def process_get_email(message: Message, state: FSMContext):
     await state.update_data(email=message.text)
     await state.set_state(CreateTableForm.name)
     await message.answer(text='Как назовем таблицу?')
+    
 
 @router.message(CreateTableForm.name)
 async def process_get_name(message: Message, state: FSMContext):
