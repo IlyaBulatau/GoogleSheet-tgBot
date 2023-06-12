@@ -33,6 +33,10 @@ class User(Base, BaseModel):
         except:
             session.rollback()
 
+    @classmethod
+    def get_all_users(cls):
+        users = cls.query.all()
+        return users
 
     @classmethod
     def get_user_by_id(cls, tg_id):

@@ -7,11 +7,14 @@ class BaseConfig:
 
     TOKEN = env('TOKEN')
     BOT_EMAIL=env('BOT_EMAIL')
+    BOT_ID = env('BOT_ID')
 
     _status = 'dev'
 
     EMAIL_ADRESS = env('EMAIL_ADRESS')
     EMAIL_PASSWORD = env('EMAIL_PASSWORD')
+
+    ADMIN_ID = env('ADMIN_ID')
 
 class DevelopmentConfig(BaseConfig):
     

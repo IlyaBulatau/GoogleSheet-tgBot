@@ -1,5 +1,6 @@
-from aiogram.types.bot_command import BotCommand
 from aiogram.methods import SetMyCommands
+from aiogram.types import BotCommand
+
 
 def set_menu():
     commands = SetMyCommands(commands=[
@@ -13,7 +14,8 @@ def set_menu():
         ),
         BotCommand(
         command='cancel',
-        description='end process'
+        description='end process',
         )
     ])
     return commands
+
