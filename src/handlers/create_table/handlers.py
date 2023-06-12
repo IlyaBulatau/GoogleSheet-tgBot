@@ -45,12 +45,12 @@ async def process_get_name(message: Message, state: FSMContext):
     if url:
         user = User.get_user_by_id(message.from_user.id)
         user.save_email(email=email)
-        Table(url=url, user_tg_id=user.tg_id).save()
+        Table(url=url, user_tg_id=user.tg_id, name=str(table_name)).save()
         await message.answer(text=f'Таблица создана\nСсылка: {url}')
 
         await state.set_state(ActionTableForm.action)
         await state.update_data(table_url=url)
-        await message.answer(text='Процесс работы с таблицей запущен для выхода из процесса щелкните /cancel/n/nЧто будем делать с таблицей?', reply_markup=create_kb_for_table_action())
+        await message.answer(text='Процесс работы с таблицей запущен для выхода из процесса щелкните /cancel\n\nЧто будем делать с таблицей?', reply_markup=create_kb_for_table_action())
         return
     
     await message.answer(text='Email который вы отправили не существуют\nПопробуйте заново /work')
@@ -73,7 +73,7 @@ async def process_get_table_url(message: Message, state: FSMContext):
     await state.update_data(table_url=message.text)
     data = await state.get_data()
 
-    connect = table_connect(data['table_url'])
+    connect, table_name = table_connect(data['table_url'])
 
     if connect == CONNECT_STATUS['Invalid']:
         await message.answer(text='Вы передали не корректный URL')
@@ -83,14 +83,14 @@ async def process_get_table_url(message: Message, state: FSMContext):
         await message.answer(text=f'Похоже у меня нету доступа к изменению этой таблицы\n\
 Что бы я мог модифицировать ее, пожалуста предоставте мне доступ\n\
 Для этого добавте мой email к пользователям имеющим доступ к таблице\n\
-Mой Emai: {config.BOT_EMAIL}')
+Mой Emai: {config.BOT_EMAIL}\n\nПосле этого начните сначала /work')
         await state.clear()
         return
     
     await state.clear()
     await state.set_state(ActionTableForm.action)
     await state.update_data(table_url=connect)
-    Table(url=connect, user_tg_id=message.from_user.id).save()
-    await message.answer(text='Процесс работы с таблицей запущен для выхода из процесса щелкните /cancel/n/nЧто будем делать с таблицей?', reply_markup=create_kb_for_table_action())
+    Table(url=connect, user_tg_id=message.from_user.id, name=table_name).save()
+    await message.answer(text='Процесс работы с таблицей запущен для выхода из процесса щелкните /cancel\n\nЧто будем делать с таблицей?', reply_markup=create_kb_for_table_action())
 
 
