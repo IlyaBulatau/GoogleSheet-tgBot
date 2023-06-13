@@ -22,14 +22,21 @@ class ActionTable:
         data = self._serialazer_for_row()
         self.sheet.insert_row(data)
 
-
     def append_row_in_table(self):
         """
         Вставляет список значений в конец таблицы
         """
-        data = self._serialazer()
+        data = self._serialazer_for_row()
         self.sheet.append_row(data)
     
+    def insert_row_by_index(self, index):
+        data = self._serialazer_for_row()
+        try:
+            self.sheet.insert_row(data, int(index))
+            return True
+        except ValueError as e:
+            return False
+            
     def insert_rows_in_table(self):
         data = self._serialiazer_for_rows()
         self.sheet.insert_rows(data)
@@ -60,6 +67,17 @@ class ActionTable:
         """
         self.table.update_title(name)
 
+    def delete_rows(self, index):
+        index = self._serializer_index(index)
+        if isinstance(index, int):
+            self.sheet.delete_rows(index)
+            return True
+        if isinstance(index, tuple):
+            start, end = index
+            self.sheet.delete_rows(start, end)
+            return True
+        return False
+
     def _serialazer_for_row(self):
         result = [item.replace('_', ' ') for item in self.data.split()]
         return result
@@ -68,4 +86,12 @@ class ActionTable:
         result = [[word.replace('_', ' ') for word in row.split()]for row in self.data.split('\n')]
         return result
     
+    def _serializer_index(self, index):
+        if str(index).isdigit():
+            return int(index)
+        try:
+            start, end = index.split(':')
+            return (int(start), int(end))
+        except:
+            return ValueError
     

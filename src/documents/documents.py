@@ -9,11 +9,13 @@ CALLBACK = {
     'mod_table': 'modification_table',
     'insert_row': 'insert_row_in_table',
     'append_row': 'append_row_in_table',
+    'insert_row_by_index': 'insert_row_by_index_in_table',
     'set_in_cell': 'set_value_in_cell',
     'rename_table': 'update_table_title',
     'insert_rows': 'insert_more_rows',
     'append_rows': 'append_more_rows',
-    'append_rows_cell': 'append_rows_by_cell'
+    'append_rows_cell': 'append_rows_by_cell',
+    'delete_rows': 'delete_row_in_table',
 }
 
 CONNECT_STATUS = {
@@ -42,5 +44,11 @@ INSTRUCTION = {
 Вывод:\n\
 ["Фамилия", "Имя", "Отчество",  "Год рождения"]\n\
 ["Иванов", "Иван", "Иванович", "2008"]\n\n\
-Обратите ВНИМАНИЯ если ячейка занята то данные добавятся в низ таблицы'
+Обратите ВНИМАНИЯ если ячейка занята то данные добавятся в низ таблицы',
+
+'Del rows': 'Если вы хотите удалить одну страку - укажите ее номер\n\
+Если вы хотите удалить диапазон строк\n\
+Введите 2 числа в формате:\n\n\
+1:3\n\
+Что означает удалить все строки начиная с первой по третью включительно'
 }

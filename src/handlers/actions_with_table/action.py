@@ -38,6 +38,46 @@ async def process_insert_row_in_table(callback: CallbackQuery, state: FSMContext
     await callback.message.answer(text=INSTRUCTION['Use row'])
     await callback.answer()
 
+@router.callback_query(Text(text=CALLBACK['insert_row_by_index']), ActionTableForm.action)
+async def process_insert_row_by_index_in_table(callback: CallbackQuery, state: FSMContext):
+    """
+    Принимает процесс после того как пользователь выбрал действия с таблицей нажав кнопку "Добавить строку по номеру строки"
+
+    Устанавливает состояния оживадания ввода значения для таблицы
+    """
+    await state.update_data(action=callback.data)
+    await state.set_state(ActionTableForm.index)
+
+    await callback.message.answer(text='Введите номер строки цифрой')
+    await callback.answer()
+
+@router.message(ActionTableForm.index)
+async def process_get_index(message: Message, state: FSMContext):
+    await state.update_data(index=message.text)
+    await state.set_state(ActionTableForm.values)
+    data = await state.get_data()
+    action = data.get('action', None)
+    url = data.get('table_url', None)
+    index = data.get('index', None)
+
+    if action == CALLBACK['insert_row_by_index']:
+        await message.answer(text=INSTRUCTION['Use row'])
+        return
+    
+    elif action == CALLBACK['delete_rows']:
+        table = ActionTable(url)
+        
+        succsessfull = table.delete_rows(index)
+        if not succsessfull:
+            await message.answer(text='Вы ввели числа не корректно\nПопробуйте ввести еще раз\n\nДля завершения процесса шелкните /cancel')
+            return
+
+        await message.answer(text='Данные очищены')
+        await message.answer(text='Продолжим?\nДля выхода из процесса щелкните /cancel', reply_markup=create_kb_for_table_action())
+        await state.set_state(ActionTableForm.action)
+        return
+
+
 @router.callback_query(Text(text=CALLBACK['set_in_cell']), ActionTableForm.action)
 async def process_set_value_in_cell(callback: CallbackQuery, state: FSMContext):
     """
@@ -146,6 +186,14 @@ async def process_get_new_table_name(message: Message, state: FSMContext):
     await message.answer(text='Продолжим?\nДля выхода из процесса щелкните /cancel', reply_markup=create_kb_for_table_action())
     await state.set_state(ActionTableForm.action)
 
+@router.callback_query(Text(text=CALLBACK['delete_rows']), ActionTableForm.action)
+async def process_delete_rows(callback: CallbackQuery, state: FSMContext):
+    await state.update_data(action=callback.data)
+    await state.set_state(ActionTableForm.index)
+
+    await callback.message.answer(text=INSTRUCTION['Del rows'])
+    await callback.answer()
+
 @router.message(ActionTableForm.values)
 async def process_add_row_in_table(message: Message, state: FSMContext):
     """
@@ -156,7 +204,7 @@ async def process_add_row_in_table(message: Message, state: FSMContext):
     Извлекает из fsm данные о том какое действие выбрал юзер
     и в зависимсти от выбора выполняет действие с таблицей
 
-    После выполнения действия включает fsm ожидания для выбора дальнейших действий с таблицей
+    После выполнения действия включает fsm ожидания для выбора дальнейших действий с таблицей   
     """
 
     await state.update_data(values=message.text)
@@ -166,6 +214,7 @@ async def process_add_row_in_table(message: Message, state: FSMContext):
     cell = data.get('cell', None)
     values = data.get('values', None)
     table_url = data.get('table_url', None)
+    index = data.get('index', None)
     table = ActionTable(table_url, values)
 
     if action == CALLBACK['insert_row']:
@@ -179,6 +228,18 @@ async def process_add_row_in_table(message: Message, state: FSMContext):
     elif action == CALLBACK['append_row']:
         table.append_row_in_table()
 
+        await message.answer(text='Строка добавлена')
+        await message.answer(text='Продолжим?\nДля выхода из процесса щелкните /cancel', reply_markup=create_kb_for_table_action())
+        await state.set_state(ActionTableForm.action)
+        return
+    
+    elif action == CALLBACK['insert_row_by_index']:
+        seccusfull = table.insert_row_by_index(index)
+        if not seccusfull:
+            await message.answer(text='Вы ввели номер строки не корректно\nПопробуйте еще раз указать номер строки\n\nДля выхода щелкните /cancel')
+            await state.set_state(ActionTableForm.index)
+            return
+        
         await message.answer(text='Строка добавлена')
         await message.answer(text='Продолжим?\nДля выхода из процесса щелкните /cancel', reply_markup=create_kb_for_table_action())
         await state.set_state(ActionTableForm.action)
@@ -214,7 +275,7 @@ async def process_add_row_in_table(message: Message, state: FSMContext):
 
     elif action == CALLBACK['append_rows_cell']:
         table.append_rows_by_cell(cell)
-        
+
         await message.answer(text="Таблица изменена!")
         await message.answer(text='Продолжим?\nДля выхода из процесса щелкните /cancel', reply_markup=create_kb_for_table_action())
         await state.set_state(ActionTableForm.action)

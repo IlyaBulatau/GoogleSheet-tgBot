@@ -15,5 +15,6 @@ class ActionTableForm(StatesGroup):
     table_name = State()
     values = State()
     cell = State()
+    index = State()
     table_url = State()
 
