@@ -65,3 +65,14 @@ class Table(Base, BaseModel):
         table = cls.query.filter(cls.url == url).first()
         return table == None
     
+    @classmethod
+    def rename(cls, **kwargs):
+        url = kwargs.pop('table_url', None)
+        table = cls.query.filter(cls.url == url).first()
+        try:
+            for k, v  in kwargs.items():
+                setattr(table, k, v)
+            session.commit()
+        except:
+            session.rollback()
+    

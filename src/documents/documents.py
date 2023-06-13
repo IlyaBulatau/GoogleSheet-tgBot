@@ -9,7 +9,8 @@ CALLBACK = {
     'mod_table': 'modification_table',
     'insert_row': 'insert_row_in_table',
     'append_row': 'append_row_in_table',
-    'set_in_cell': 'set_value_in_cell'
+    'set_in_cell': 'set_value_in_cell',
+    'rename_table': 'update table title'
 }
 
 CONNECT_STATUS = {

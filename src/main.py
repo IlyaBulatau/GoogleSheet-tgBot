@@ -41,4 +41,4 @@ if __name__ == "__main__":
     logger.warning('START BOT')
     asyncio.run(main())
     session.remove()
-    logger.warning('STOP BOT')
+    logger.warning('STOP BOT')  
