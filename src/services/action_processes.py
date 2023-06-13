@@ -15,11 +15,11 @@ class ActionTable:
         self.data: str = data # данные
         self.sheet: Worksheet = self.table.sheet1 # обьект первого листа
 
-    def insert_ro_in_table(self):
+    def insert_row_in_table(self):
         """
         Вставляет список значений в начало таблицы
         """
-        data = self._serialazer()
+        data = self._serialazer_for_row()
         self.sheet.insert_row(data)
 
 
@@ -29,7 +29,19 @@ class ActionTable:
         """
         data = self._serialazer()
         self.sheet.append_row(data)
+    
+    def insert_rows_in_table(self):
+        data = self._serialiazer_for_rows()
+        self.sheet.insert_rows(data)
 
+    def append_rows_in_table(self):
+        data = self._serialiazer_for_rows()
+        self.sheet.append_rows(data, table_range='A1')
+    
+    def append_rows_by_cell(self, cell):
+        data = self._serialiazer_for_rows()
+        self.sheet.append_rows(data, table_range=cell)
+    
     def set_value_in_cell(self, cell, value):
         """
         Вставляет значения в ячейку
@@ -48,11 +60,12 @@ class ActionTable:
         """
         self.table.update_title(name)
 
-    def _serialazer(self):
-        result = []
-        for item in self.data.split():
-            item = item.replace('_', ' ')
-            result.append(item)
+    def _serialazer_for_row(self):
+        result = [item.replace('_', ' ') for item in self.data.split()]
+        return result
+    
+    def _serialiazer_for_rows(self):
+        result = [[word.replace('_', ' ') for word in row.split()]for row in self.data.split('\n')]
         return result
     
     

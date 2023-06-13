@@ -65,6 +65,45 @@ async def process_rename_table(callback: CallbackQuery, state: FSMContext):
     await callback.message.answer(text='Введите новый заголовок для таблицы')
     await callback.answer()
 
+@router.callback_query(Text(text=CALLBACK['insert_rows']), ActionTableForm.action)
+async def process_insert_more_rows_in_table(callback: CallbackQuery, state: FSMContext):
+    """
+    Принимает процесс после того как пользователь выбрал действия с таблицей нажав кнопку "Добавить несколько строк в начало"
+
+    Устанавливает состояния оживадания ввода значения для таблицы
+    """
+    await state.update_data(action=callback.data)
+    await state.set_state(ActionTableForm.values)
+
+    await callback.message.answer(text=INSTRUCTION['Use rows'])
+    await callback.answer()
+
+@router.callback_query(Text(text=CALLBACK['append_rows']), ActionTableForm.action)
+async def process_append_more_rows_in_table(callback: CallbackQuery, state: FSMContext):
+    """
+    Принимает процесс после того как пользователь выбрал действия с таблицей нажав кнопку "Добавить несколько строк в конец"
+
+    Устанавливает состояния оживадания ввода значения для таблицы
+    """
+    await state.update_data(action=callback.data)
+    await state.set_state(ActionTableForm.values)
+
+    await callback.message.answer(text=INSTRUCTION['Use rows'])
+    await callback.answer()
+
+@router.callback_query(Text(text=CALLBACK['append_rows_cell']), ActionTableForm.action)
+async def process_append_more_rows_in_cell_table(callback: CallbackQuery, state: FSMContext):
+    """
+    Принимает процесс после того как пользователь выбрал действия с таблицей нажав кнопку "Добавить несколько строк начиная с заданной ячейки"
+
+    Устанавливает состояния оживадания ввода значения для таблицы
+    """
+    await state.update_data(action=callback.data)
+    await state.set_state(ActionTableForm.cell)
+
+    await callback.message.answer(text=INSTRUCTION['Set value in table'][2])
+    await callback.answer()
+
 
 @router.message(ActionTableForm.cell)
 async def process_get_cell(message: Message, state: FSMContext):
@@ -75,8 +114,16 @@ async def process_get_cell(message: Message, state: FSMContext):
     """
     await state.update_data(cell=message.text)
     await state.set_state(ActionTableForm.values)
+    data = await state.get_data()
+    action = data.get('action', None)
 
-    await message.answer(text=INSTRUCTION['Set value in table'][1])
+    if action == CALLBACK['set_in_cell']:
+        await message.answer(text=INSTRUCTION['Set value in table'][1])
+        return
+
+    elif action == CALLBACK['append_rows_cell']:
+        await message.answer(text=INSTRUCTION['Use rows'])    
+
 
 @router.message(ActionTableForm.table_name)
 async def process_get_new_table_name(message: Message, state: FSMContext):
@@ -122,7 +169,8 @@ async def process_add_row_in_table(message: Message, state: FSMContext):
     table = ActionTable(table_url, values)
 
     if action == CALLBACK['insert_row']:
-        table.insert_ro_in_table()
+        table.insert_row_in_table()
+
         await message.answer(text='Строка добавлена')
         await message.answer(text='Продолжим?\nДля выхода из процесса щелкните /cancel', reply_markup=create_kb_for_table_action())
         await state.set_state(ActionTableForm.action)
@@ -130,6 +178,7 @@ async def process_add_row_in_table(message: Message, state: FSMContext):
 
     elif action == CALLBACK['append_row']:
         table.append_row_in_table()
+
         await message.answer(text='Строка добавлена')
         await message.answer(text='Продолжим?\nДля выхода из процесса щелкните /cancel', reply_markup=create_kb_for_table_action())
         await state.set_state(ActionTableForm.action)
@@ -137,6 +186,7 @@ async def process_add_row_in_table(message: Message, state: FSMContext):
     
     elif action == CALLBACK['set_in_cell']:
         seccusfull = table.set_value_in_cell(cell, values)
+
         if not seccusfull:
             await message.answer(text='Вы ввели номер ячейки не корректно, введите еще раз\nДля завершения процесса шелкните /cancel')
             await state.set_state(ActionTableForm.cell)
@@ -145,3 +195,29 @@ async def process_add_row_in_table(message: Message, state: FSMContext):
         await message.answer(text='Продолжим?\nДля выхода из процесса щелкните /cancel', reply_markup=create_kb_for_table_action())
         await state.set_state(ActionTableForm.action)
         return
+
+    elif action == CALLBACK['insert_rows']:
+        table.insert_rows_in_table()
+
+        await message.answer(text="Таблица изменена!")
+        await message.answer(text='Продолжим?\nДля выхода из процесса щелкните /cancel', reply_markup=create_kb_for_table_action())
+        await state.set_state(ActionTableForm.action)
+        return
+
+    elif action == CALLBACK['append_rows']:
+        table.append_rows_in_table()
+
+        await message.answer(text="Таблица изменена!")
+        await message.answer(text='Продолжим?\nДля выхода из процесса щелкните /cancel', reply_markup=create_kb_for_table_action())
+        await state.set_state(ActionTableForm.action)
+        return
+
+    elif action == CALLBACK['append_rows_cell']:
+        table.append_rows_by_cell(cell)
+        
+        await message.answer(text="Таблица изменена!")
+        await message.answer(text='Продолжим?\nДля выхода из процесса щелкните /cancel', reply_markup=create_kb_for_table_action())
+        await state.set_state(ActionTableForm.action)
+        return
+
+
