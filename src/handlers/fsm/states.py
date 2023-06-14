@@ -21,4 +21,5 @@ class ActionTableForm(StatesGroup):
 class FormattingTableForm(StatesGroup):
     formatting = State()
     cell = State()
+    values = State()
     table_url = State()

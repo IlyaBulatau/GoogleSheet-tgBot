@@ -47,11 +47,24 @@ def create_kb_for_table_formatting():
     kb = InlineKeyboardBuilder()
 
     buttons = [
-        InlineKeyboardButton(text='Изменить цвет'),
-        InlineKeyboardButton(text='Изменить шрифт'),
+        InlineKeyboardButton(text='Изменить цвет', callback_data=CALLBACK['color']),
+        InlineKeyboardButton(text='Изменить шрифт', callback_data=CALLBACK['font']),
         InlineKeyboardButton(text='Назад', callback_data=CALLBACK['back'])
     ]
 
-    kb.row(*buttons)
+    kb.row(*buttons, width=1)
+
+    return kb.as_markup()
+
+def create_kb_for_choice_color():
+    kb = InlineKeyboardBuilder()
+
+    buttons = [
+        InlineKeyboardButton(text='Синий', callback_data=CALLBACK['blue']),
+        InlineKeyboardButton(text='Красный', callback_data=CALLBACK['red']),
+        InlineKeyboardButton(text='Зелёный', callback_data=CALLBACK['green']),
+    ]
+
+    kb.row(*buttons, width=1)
 
     return kb.as_markup()

@@ -1,19 +1,30 @@
 from gspread import Worksheet, client as cl
 from gspread.client import Spreadsheet
-from gspread.exceptions import IncorrectCellLabel
+from gspread.exceptions import IncorrectCellLabel, APIError
+import gspread_formatting as gf
+from string import ascii_letters
 
 from services.client import client
 
-class ActionTable:
+class BaseTable:
     """
-    Обьект действий с таблицей
+    Базовый класс таблиц
     """
-    
+
     def __init__(self, url: str, data: str = None):
         self.client: cl = client # обьект клиента google
         self.table: Spreadsheet = client.open_by_url(url) # обьект таблицы
         self.data: str = data # данные
         self.sheet: Worksheet = self.table.sheet1 # обьект первого листа
+
+
+class ActionTable(BaseTable):
+    """
+    Обьект действий с таблицей
+    """
+    
+    def __init__(self, url: str, data: str = None):
+        super().__init__(url, data)
 
     def insert_row_in_table(self):
         """
@@ -95,3 +106,39 @@ class ActionTable:
         except:
             return ValueError
     
+
+class ColorFormattingTable(BaseTable):
+
+    def __init__(self, url: str, data: str = None):
+        super().__init__(url, data)
+
+    def set_color(self, values, color):
+        color = self._get_color(color)
+        if values in 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя\
+                        АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ': # если указаны русские симолы не пропускать
+            return False
+        
+        format_ = gf.CellFormat(backgroundColor=gf.Color(*color)) # форматирование по цвету
+        try:
+            gf.format_cell_range(self.sheet, values, format_)
+            return True
+        except APIError as e:
+            return False
+        except ValueError as e:
+            return False
+    
+    def _get_color(self, color: str):
+        """
+        Достает цвет из коллбека
+        """
+        color = color.split('_')[1]
+
+        if color == 'blue':
+            return (0, 0.25, 1)
+
+        elif color == 'red':
+            return (1, 0.25, 0)
+
+        elif color == 'green':
+            return (0.25, 1, 0)        
+        
