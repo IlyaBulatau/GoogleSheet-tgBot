@@ -16,6 +16,8 @@ CALLBACK = {
     'append_rows': 'append_more_rows',
     'append_rows_cell': 'append_rows_by_cell',
     'delete_rows': 'delete_row_in_table',
+    'formatting': 'start_formatting_process',
+    'back': 'return_choice_actions'
 }
 
 CONNECT_STATUS = {

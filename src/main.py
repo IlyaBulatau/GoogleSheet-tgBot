@@ -12,6 +12,7 @@ from handlers.fsm.process import router as fsm_router
 from handlers.create_table.handlers import router as create_table_router
 from handlers.actions_with_table.action import router as action_router
 from handlers.admin.commands import router as admin_router
+from handlers.actions_with_table.formatting import router as formatting_router
 
 from documents.menu import set_menu
 from config import config
@@ -30,6 +31,7 @@ async def main():
                         create_table_router,
                         action_router,
                         admin_router,
+                        formatting_router,
                         )
     
     await bot(set_menu())

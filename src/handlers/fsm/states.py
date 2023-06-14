@@ -18,3 +18,7 @@ class ActionTableForm(StatesGroup):
     index = State()
     table_url = State()
 
+class FormattingTableForm(StatesGroup):
+    formatting = State()
+    cell = State()
+    table_url = State()

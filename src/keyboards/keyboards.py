@@ -34,8 +34,24 @@ def create_kb_for_table_action():
         InlineKeyboardButton(text='Добавить несколько строк в в конец', callback_data=CALLBACK['append_rows']),
         InlineKeyboardButton(text='Добавить несколько строк начиная с заданной ячейки', callback_data=CALLBACK['append_rows_cell']),
         InlineKeyboardButton(text='Удалить страку/строки', callback_data=CALLBACK['delete_rows']),
+        InlineKeyboardButton(text='Форматирование', callback_data=CALLBACK['formatting']),
     ]
 
     kb.row(*buttons, width=1)
+    
+
+    return kb.as_markup()
+
+def create_kb_for_table_formatting():
+
+    kb = InlineKeyboardBuilder()
+
+    buttons = [
+        InlineKeyboardButton(text='Изменить цвет'),
+        InlineKeyboardButton(text='Изменить шрифт'),
+        InlineKeyboardButton(text='Назад', callback_data=CALLBACK['back'])
+    ]
+
+    kb.row(*buttons)
 
     return kb.as_markup()
