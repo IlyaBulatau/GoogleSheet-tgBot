@@ -22,4 +22,5 @@ class FormattingTableForm(StatesGroup):
     formatting = State()
     cell = State()
     values = State()
+    rgb = State()
     table_url = State()

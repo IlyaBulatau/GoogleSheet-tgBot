@@ -112,21 +112,43 @@ class ColorFormattingTable(BaseTable):
     def __init__(self, url: str, data: str = None):
         super().__init__(url, data)
 
-    def set_color(self, values, color):
+    def set_color(self, cell, color):
+        
         color = self._get_color(color)
-        if values in 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя\
+        if cell in 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя\
                         АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ': # если указаны русские симолы не пропускать
             return False
         
         format_ = gf.CellFormat(backgroundColor=gf.Color(*color)) # форматирование по цвету
         try:
-            gf.format_cell_range(self.sheet, values, format_)
-            return True
+            gf.format_cell_range(self.sheet, cell, format_)
+            return 'Suc'
         except APIError as e:
             return False
         except ValueError as e:
             return False
-    
+        
+    def set_color_rgb(self, cell, rgb):
+        if not self._is_valid_rgb(rgb):
+            return 'error rgb'
+        
+        if cell in 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя\
+                        АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ': # если указаны русские симолы не пропускать
+            return 'error cell'
+
+        r, g, b = rgb.split()
+        rgb = self._rgb_serializer((int(r), int(g), int(b)))
+
+        format_ = gf.CellFormat(backgroundColor=gf.Color(*rgb)) # форматирование по цвету
+        try:
+            gf.format_cell_range(self.sheet, cell, format_)
+            return True
+        except APIError as e:
+            return 'error cell'
+        except ValueError as e:
+            return 'error cell'
+
+            
     def _get_color(self, color: str):
         """
         Достает цвет из коллбека
@@ -140,5 +162,37 @@ class ColorFormattingTable(BaseTable):
             return (1, 0.25, 0)
 
         elif color == 'green':
-            return (0.25, 1, 0)        
+            return (0.25, 1, 0)      
+        
+    
+    def _rgb_serializer(self, rgb):
+        """
+        Сериализует входящий rgb в значени от 0 до 1
+        """
+        r, g, b = rgb
+        return(round(r/255, 2), round(g/255, 2), round(b/255, 2))
+        
+        
+    def _is_valid_rgb(self, color):   
+        """
+        Проверяет валидность введенных данных rgb
+        """     
+        try:
+            r, g, b = color.split()
+        except:
+            return False
+
+        if not all((
+            str(r).isdigit(),
+            str(g).isdigit(),
+            str(b).isdigit())):
+            return False
+
+        if not all((
+            0 <= int(r) <= 255,
+            0 <= int(g) <= 255,
+            0 <= int(b) <= 255)):
+            return False
+        
+        return True
         

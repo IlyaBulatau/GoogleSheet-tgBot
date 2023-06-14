@@ -63,6 +63,7 @@ def create_kb_for_choice_color():
         InlineKeyboardButton(text='Синий', callback_data=CALLBACK['blue']),
         InlineKeyboardButton(text='Красный', callback_data=CALLBACK['red']),
         InlineKeyboardButton(text='Зелёный', callback_data=CALLBACK['green']),
+        InlineKeyboardButton(text='Указать в формате RGB', callback_data=CALLBACK['rgb']),
     ]
 
     kb.row(*buttons, width=1)

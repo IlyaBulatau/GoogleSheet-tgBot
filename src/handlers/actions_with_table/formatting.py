@@ -54,6 +54,50 @@ async def process_get_cell_for_color(message: Message, state: FSMContext):
 
     await message.answer(text='Выберите цвет', reply_markup=create_kb_for_choice_color())
 
+@router.callback_query(Text(text=CALLBACK['rgb']), FormattingTableForm.values)
+async def process_get_rgb_color(callback: CallbackQuery, state: FSMContext):
+    """
+    Принимает процесс после того как пользователь нажал "Указать в фомате RGB"
+
+    Ожидает ввода ячейки
+    """
+    await state.update_data(values=callback.data)
+    await state.set_state(FormattingTableForm.rgb)
+
+    await callback.message.answer(text=INSTRUCTION['RGB'])
+    await callback.answer()
+
+@router.message(FormattingTableForm.rgb)
+async def process_get_rgb_color(message: Message, state: FSMContext):
+    """
+    Принимает процесс после ввода rgb
+
+    Выполняет изменения цвета либо выводит информацию о неправильно введенных даннах
+    """
+    await state.update_data(rgb=message.text)
+    data = await state.get_data()
+
+    cell = data.get('cell', None)
+    rgb = data.get('rgb', None)
+    table_url = data.get('table_url', None)
+
+    table = ColorFormattingTable(table_url)
+    sucssesfull = table.set_color_rgb(cell, rgb)
+    
+    if sucssesfull != 'Suc': # если данные не валидны
+        if sucssesfull == 'error rgb': # если не валидно значение rgb
+            await state.set_state(FormattingTableForm.rgb)
+            await message.answer(text='Вы ввели цвет формата rgb не верно, попробуйте еще раз\n\nДля прекращения работы /cancel щелк')
+            return
+        elif sucssesfull == 'error cell': # если не валидно значения ячейки
+            await state.set_state(FormattingTableForm.cell)
+            await message.answer(text='Вы ввели значения ячейки не корректно попробуйте ввести еще раз\n\nДля прекращения работы /cancel щелк')
+            return
+
+    await state.set_state(FormattingTableForm.formatting)
+    await message.answer(text='Цвет изменен!')
+    await message.answer('Продолжим творчество?\n\nДля возврата к изменению таблицы кнопка "Назад"\n\nДля прекращения работы /cancel', reply_markup=create_kb_for_table_formatting())
+
 @router.callback_query(Text(startswith='color_'), FormattingTableForm.values)
 async def process_get_color_value(callback: CallbackQuery, state: FSMContext):
     """
@@ -68,8 +112,6 @@ async def process_get_color_value(callback: CallbackQuery, state: FSMContext):
     values = data.get('values', None)
     table_url = data.get('table_url', None)
 
-    await state.set_state(FormattingTableForm.formatting)
-
     table = ColorFormattingTable(table_url)
     sucssesfull = table.set_color(cell, values)
 
@@ -78,7 +120,8 @@ async def process_get_color_value(callback: CallbackQuery, state: FSMContext):
         await callback.message.answer(text='Вы ввели значения ячейки не корректно попробуйте ввести еще раз\n\nДля прекращения работы /cancel щелк')
         await callback.answer()
         return
-
+    
+    await state.set_state(FormattingTableForm.formatting)
     await callback.message.answer(text='Цвет изменен!')
     await callback.message.answer(text='Продолжим творчество?\n\nДля возврата к изменению таблицы кнопка "Назад"\n\nДля прекращения работы /cancel', reply_markup=create_kb_for_table_formatting())
     await callback.answer()    
