@@ -88,7 +88,12 @@ async def process_get_cell_for_font(message: Message, state: FSMContext):
     table_url = data.get('table_url', None)
 
     table = FontFormattingTable(table_url)
-    table.set_font_style(cell, style)
+    sucssesfull = table.set_font_style(cell, style)
+
+    if not sucssesfull:
+        await state.set_state(FontFormattingTableForm.cell)
+        await message.answer(text='Вы ввели значения ячейки не корректно попробуйте ввести еще раз\n\nДля прекращения работы /cancel щелк')
+        return
 
     await state.set_state(FormattingTableForm.formatting)
     await message.answer(text='Шрифт применен!')

@@ -217,8 +217,39 @@ class FontFormattingTable(BaseTable):
         super().__init__(url, data)
 
     def set_font_style(self, cell, style):
-        format = gf.CellFormat(textFormat=gf.TextFormat(fontFamily=style.split('_')[1]))
+        if cell in 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя\
+                        АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ': # если указаны русские симолы не пропускать
+            return False
 
-        gf.format_cell_range(self.sheet, cell, format)
+        style = self._style_serialier(style)
 
-    
+        if style == 'italic':
+            format = gf.CellFormat(textFormat=gf.TextFormat(italic=True))
+        
+        elif style == 'bold':
+            format = gf.CellFormat(textFormat=gf.TextFormat(bold=True))
+
+        elif style == 'georgia':
+            format = gf.CellFormat(textFormat=gf.TextFormat(fontFamily=style))
+
+        elif style == 'verdana':
+            format = gf.CellFormat(textFormat=gf.TextFormat(fontFamily=style))
+
+        elif style == 'strikethrough':
+            format = gf.CellFormat(textFormat=gf.TextFormat(strikethrough=True))
+
+        elif style == 'underline':
+            format = gf.CellFormat(textFormat=gf.TextFormat(underline=True))
+
+        try:
+            gf.format_cell_range(self.sheet, cell, format)  
+            return True
+        except APIError as e:
+            return False
+        except ValueError as e:
+            return False
+
+    def _style_serialier(self, style):
+        style = style.split('_')[1]
+
+        return style
