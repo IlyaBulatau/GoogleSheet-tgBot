@@ -82,6 +82,7 @@ def create_kb_for_font_upgrade():
     buttons = [
         InlineKeyboardButton(text='Изменить стиль шрифта', callback_data=CALLBACK['font_style']),
         InlineKeyboardButton(text='Изменить цвет текста', callback_data=CALLBACK['font_color']),
+        InlineKeyboardButton(text='Изменить размер текста', callback_data=CALLBACK['font_size']),
     ]
 
     kb.row(*buttons, width=1)

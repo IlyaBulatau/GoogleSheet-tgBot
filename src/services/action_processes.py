@@ -224,30 +224,57 @@ class FontFormattingTable(BaseTable):
         style = self._style_serialier(style)
 
         if style == 'italic':
-            format = gf.CellFormat(textFormat=gf.TextFormat(italic=True))
+            format_ = gf.CellFormat(textFormat=gf.TextFormat(italic=True))
         
         elif style == 'bold':
-            format = gf.CellFormat(textFormat=gf.TextFormat(bold=True))
+            format_ = gf.CellFormat(textFormat=gf.TextFormat(bold=True))
 
         elif style == 'georgia':
-            format = gf.CellFormat(textFormat=gf.TextFormat(fontFamily=style))
+            format_ = gf.CellFormat(textFormat=gf.TextFormat(fontFamily=style))
 
         elif style == 'verdana':
-            format = gf.CellFormat(textFormat=gf.TextFormat(fontFamily=style))
+            format_ = gf.CellFormat(textFormat=gf.TextFormat(fontFamily=style))
 
         elif style == 'strikethrough':
-            format = gf.CellFormat(textFormat=gf.TextFormat(strikethrough=True))
+            format_ = gf.CellFormat(textFormat=gf.TextFormat(strikethrough=True))
 
         elif style == 'underline':
-            format = gf.CellFormat(textFormat=gf.TextFormat(underline=True))
+            format_ = gf.CellFormat(textFormat=gf.TextFormat(underline=True))
 
         try:
-            gf.format_cell_range(self.sheet, cell, format)  
+            gf.format_cell_range(self.sheet, cell, format_)  
             return True
         except APIError as e:
             return False
         except ValueError as e:
             return False
+
+
+    def set_font_size(self, cell, size):
+        if cell in 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя\
+                        АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ': # если указаны русские симолы не пропускать
+            return 'error cell'
+        
+        if not self._is_valid_size(size):
+            return 'error size'
+
+        format_ = gf.CellFormat(textFormat=gf.TextFormat(fontSize=int(size)))
+
+        try:
+            gf.format_cell_range(self.sheet, cell, format_)
+            return True
+        except APIError as e:
+            return 'error cell'
+        except ValueError as e:
+            return 'error cell'
+
+
+
+    def _is_valid_size(self, size):
+        if str(size).isdigit():
+            return True
+        return False
+
 
     def _style_serialier(self, style):
         style = style.split('_')[1]

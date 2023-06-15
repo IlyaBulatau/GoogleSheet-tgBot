@@ -35,4 +35,6 @@ class FontFormattingTableForm(StatesGroup):
     font = State()
     style = State()
     cell = State()
+    size = State()
+    color = State()
     table_url = State()

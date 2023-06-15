@@ -36,7 +36,8 @@ CALLBACK = {
     'rgb': 'color_RGB',
     'font': 'foramtting_by_font',
     'font_style': 'font_style_upgrade',
-    'font_color': 'font_color_upgrade'
+    'font_color': 'font_color_upgrade',
+    'font_size': 'font_size_upgrade'
 }
 
 CONNECT_STATUS = {
@@ -98,6 +99,8 @@ INSTRUCTION = {
     A2:C5\n\n\
 Изменит стиль в каждой ячейки диапазона начиная с А2 заканчивая С5 включительно\n\
 И тд',
+
+'Font size': 'Введите размер - целое натурально число',
 
 'RGB': 'Введите 3 числа от 0 до 255 через пробел в формате\n\n\
     255 255 255'

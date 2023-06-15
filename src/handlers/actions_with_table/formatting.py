@@ -67,6 +67,22 @@ async def process_get_style_type(callback: CallbackQuery, state: FSMContext):
     await callback.message.answer(text='Выберите шрифт', reply_markup=create_kb_with_text_styles())
     await callback.answer()
 
+@router.callback_query(Text(text=CALLBACK['font_size']), FontFormattingTableForm.font)
+async def process_get_font_size_choice(callback: CallbackQuery, state: FSMContext):
+    await state.update_data(font=callback.data)
+    await state.set_state(FontFormattingTableForm.size)
+
+    await callback.message.answer(text=INSTRUCTION['Font size'])
+    await callback.answer()
+
+
+@router.message(FontFormattingTableForm.size)
+async def process_get_size(message: Message, state: FSMContext):
+    await state.update_data(size=message.text)
+    await state.set_state(FontFormattingTableForm.cell)
+
+    await message.answer(text=INSTRUCTION['Font style'])
+
 
 @router.callback_query(Text(startswith='style_'), FontFormattingTableForm.style)
 async def process_get_font_style_choice(callback: CallbackQuery, state: FSMContext):
@@ -85,20 +101,45 @@ async def process_get_cell_for_font(message: Message, state: FSMContext):
     font = data.get('font', None)
     style = data.get('style', None)
     cell = data.get('cell', None)
+    size = data.get('size', None)
     table_url = data.get('table_url', None)
 
     table = FontFormattingTable(table_url)
-    sucssesfull = table.set_font_style(cell, style)
 
-    if not sucssesfull:
-        await state.set_state(FontFormattingTableForm.cell)
-        await message.answer(text='Вы ввели значения ячейки не корректно попробуйте ввести еще раз\n\nДля прекращения работы /cancel щелк')
-        return
+    if font == CALLBACK['font_style']:
+
+        sucssesfull = table.set_font_style(cell, style)
+
+        if not sucssesfull:
+            await state.set_state(FontFormattingTableForm.cell)
+            await message.answer(text='Вы ввели значения ячейки не корректно попробуйте ввести еще раз\n\nДля прекращения работы /cancel щелк')
+            return
+
+        await message.answer(text='Шрифт применен!')
+
+    elif font == CALLBACK['font_size']:
+
+        sucssesfull = table.set_font_size(cell, size)
+    
+        if sucssesfull == 'error cell':
+            await state.set_state(FontFormattingTableForm.cell)
+            await message.answer(text='Вы ввели значения ячейки не корректно попробуйте ввести еще раз\n\nДля прекращения работы /cancel щелк')
+            return
+
+        elif sucssesfull == 'error size':
+            await state.set_state(FontFormattingTableForm.size)
+            await message.answer(text='Вы ввели значения размера не корректно попробуйте ввести еще раз\n\nДля прекращения работы /cancel щелк')
+            return
+        
+        else:
+            await message.answer(text='Готово!')
 
     await state.set_state(FormattingTableForm.formatting)
-    await message.answer(text='Шрифт применен!')
     await message.answer(text='Что делаем дальше?', reply_markup=create_kb_for_table_formatting())
+    
 
+
+    
 @router.message(ColorFormattingTableForm.cell)
 async def process_get_cell_for_color(message: Message, state: FSMContext):
     """
