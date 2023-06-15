@@ -20,6 +20,7 @@ class ActionTableForm(StatesGroup):
 
 class FormattingTableForm(StatesGroup):
     formatting = State()
+    font = State()
     cell = State()
     values = State()
     rgb = State()

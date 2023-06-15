@@ -63,7 +63,25 @@ def create_kb_for_choice_color():
         InlineKeyboardButton(text='Синий', callback_data=CALLBACK['blue']),
         InlineKeyboardButton(text='Красный', callback_data=CALLBACK['red']),
         InlineKeyboardButton(text='Зелёный', callback_data=CALLBACK['green']),
+        InlineKeyboardButton(text='Белый', callback_data=CALLBACK['white']),
+        InlineKeyboardButton(text='Чёрный', callback_data=CALLBACK['black']),
+        InlineKeyboardButton(text='Жёлтый', callback_data=CALLBACK['yellow']),
+        InlineKeyboardButton(text='Серый', callback_data=CALLBACK['grey']),
+        InlineKeyboardButton(text='Коричневый', callback_data=CALLBACK['brown']),
         InlineKeyboardButton(text='Указать в формате RGB', callback_data=CALLBACK['rgb']),
+    ]
+
+    kb.row(*buttons, width=2)
+
+    return kb.as_markup()
+
+def create_kb_for_font_upgrade():
+
+    kb = InlineKeyboardBuilder()
+
+    buttons = [
+        InlineKeyboardButton(text='Изменить шрифт', callback_data=CALLBACK['font_style']),
+        InlineKeyboardButton(text='Изменить цвет текста', callback_data=CALLBACK['font_color']),
     ]
 
     kb.row(*buttons, width=1)

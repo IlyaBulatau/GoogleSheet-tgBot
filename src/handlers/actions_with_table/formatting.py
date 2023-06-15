@@ -6,7 +6,7 @@ from aiogram.filters import Text
 from documents.documents import CALLBACK, INSTRUCTION
 from handlers.fsm.states import ActionTableForm, FormattingTableForm
 from services.action_processes import ColorFormattingTable
-from keyboards.keyboards import create_kb_for_table_action, create_kb_for_table_formatting, create_kb_for_choice_color
+from keyboards.keyboards import create_kb_for_table_action, create_kb_for_table_formatting, create_kb_for_choice_color, create_kb_for_font_upgrade
 
 
 router = Router()
@@ -41,6 +41,15 @@ async def process_set_color_in_cell(callback: CallbackQuery, state: FSMContext):
 
     await callback.message.answer(text=INSTRUCTION['Color'])
     await callback.answer()
+
+@router.callback_query(Text(text=CALLBACK['font']), FormattingTableForm.formatting)
+async def process_set_font_in_table(callback: CallbackQuery, state: FSMContext):
+    await state.update_data(formatting=callback.data)
+    await state.set_state(FormattingTableForm.font)
+
+    await callback.message.answer(text='Что хотите поменть?', reply_markup=create_kb_for_font_upgrade())
+    await callback.answer()
+
 
 @router.message(FormattingTableForm.cell)
 async def process_get_cell_for_color(message: Message, state: FSMContext):

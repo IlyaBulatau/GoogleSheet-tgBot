@@ -22,8 +22,15 @@ CALLBACK = {
     'blue': 'color_blue',
     'red': 'color_red',
     'green': 'color_green',
+    'white': 'color_white',
+    'black': 'color_black',
+    'yellow': 'color_yellow',
+    'grey': 'color_grey',
+    'brown': 'color_brown',
+    'rgb': 'color_RGB',
     'font': 'foramtting_by_font',
-    'rgb': 'color_RGB'
+    'font_style': 'font_style_upgrade',
+    'font_color': 'font_color_upgrade'
 }
 
 CONNECT_STATUS = {
@@ -72,6 +79,8 @@ INSTRUCTION = {
     A2:C5\n\n\
 Изменит цвет в каждой ячейки диапазона начиная с А2 заканчивая С5 включительно\n\
 И тд',
+
+'Font': '',
 
 'RGB': 'Введите 3 числа от 0 до 255 через пробел в формате\n\n\
     255 255 255'

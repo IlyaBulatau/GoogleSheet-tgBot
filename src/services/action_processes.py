@@ -156,13 +156,28 @@ class ColorFormattingTable(BaseTable):
         color = color.split('_')[1]
 
         if color == 'blue':
-            return (0, 0.25, 1)
+            return self._rgb_serializer((0, 0, 255))
 
         elif color == 'red':
-            return (1, 0.25, 0)
+            return self._rgb_serializer((255, 0, 0))
 
         elif color == 'green':
-            return (0.25, 1, 0)      
+            return self._rgb_serializer((0, 255, 0))
+
+        elif color == 'white':
+            return self._rgb_serializer((255, 255, 255))
+
+        elif color == 'black':
+            return self._rgb_serializer((0, 0, 0))
+
+        elif color == 'yellow':
+            return self._rgb_serializer((255, 255, 0))
+
+        elif color == 'grey':
+            return self._rgb_serializer((128, 128, 128))
+
+        elif color == 'brown':
+            return self._rgb_serializer((139, 69, 19))      
         
     
     def _rgb_serializer(self, rgb):
@@ -195,4 +210,10 @@ class ColorFormattingTable(BaseTable):
             return False
         
         return True
-        
+    
+class FontFormattingTable(BaseTable):
+
+    def __init__(self, url: str, data: str = None):
+        super().__init__(url, data)
+
+    
