@@ -47,8 +47,8 @@ def create_kb_for_table_formatting():
     kb = InlineKeyboardBuilder()
 
     buttons = [
-        InlineKeyboardButton(text='Изменить цвет', callback_data=CALLBACK['color']),
-        InlineKeyboardButton(text='Изменить шрифт', callback_data=CALLBACK['font']),
+        InlineKeyboardButton(text='Изменить цвет ячейки', callback_data=CALLBACK['color']),
+        InlineKeyboardButton(text='Изменить текст', callback_data=CALLBACK['font']),
         InlineKeyboardButton(text='Назад', callback_data=CALLBACK['back'])
     ]
 

@@ -17,6 +17,70 @@ class BaseTable:
         self.data: str = data # данные
         self.sheet: Worksheet = self.table.sheet1 # обьект первого листа
 
+    def _is_valid_rgb(self, color):   
+        """
+        Проверяет валидность введенных данных rgb
+        """     
+        try:
+            r, g, b = color.split()
+        except:
+            return False
+
+        if not all((
+            str(r).isdigit(),
+            str(g).isdigit(),
+            str(b).isdigit())):
+            return False
+
+        if not all((
+            0 <= int(r) <= 255,
+            0 <= int(g) <= 255,
+            0 <= int(b) <= 255)):
+            return False
+        
+        return True
+    
+
+    def _get_color(self, color: str):
+        """
+        Достает цвет из коллбека
+        """
+        color = color.split('_')[1]
+
+        if color == 'blue':
+            return self._rgb_serializer((0, 0, 255))
+
+        elif color == 'red':
+            return self._rgb_serializer((255, 0, 0))
+
+        elif color == 'green':
+            return self._rgb_serializer((0, 255, 0))
+
+        elif color == 'white':
+            return self._rgb_serializer((255, 255, 255))
+
+        elif color == 'black':
+            return self._rgb_serializer((0, 0, 0))
+
+        elif color == 'yellow':
+            return self._rgb_serializer((255, 255, 0))
+
+        elif color == 'grey':
+            return self._rgb_serializer((128, 128, 128))
+
+        elif color == 'brown':
+            return self._rgb_serializer((139, 69, 19))      
+
+
+    def _rgb_serializer(self, rgb):
+        """
+        Сериализует входящий rgb в значени от 0 до 1
+        """
+        r, g, b = rgb
+        return(round(r/255, 2), round(g/255, 2), round(b/255, 2))
+        
+
+
 
 class ActionTable(BaseTable):
     """
@@ -142,74 +206,13 @@ class ColorFormattingTable(BaseTable):
         format_ = gf.CellFormat(backgroundColor=gf.Color(*rgb)) # форматирование по цвету
         try:
             gf.format_cell_range(self.sheet, cell, format_)
-            return True
+            return 'Suc'
         except APIError as e:
             return 'error cell'
         except ValueError as e:
             return 'error cell'
 
-            
-    def _get_color(self, color: str):
-        """
-        Достает цвет из коллбека
-        """
-        color = color.split('_')[1]
-
-        if color == 'blue':
-            return self._rgb_serializer((0, 0, 255))
-
-        elif color == 'red':
-            return self._rgb_serializer((255, 0, 0))
-
-        elif color == 'green':
-            return self._rgb_serializer((0, 255, 0))
-
-        elif color == 'white':
-            return self._rgb_serializer((255, 255, 255))
-
-        elif color == 'black':
-            return self._rgb_serializer((0, 0, 0))
-
-        elif color == 'yellow':
-            return self._rgb_serializer((255, 255, 0))
-
-        elif color == 'grey':
-            return self._rgb_serializer((128, 128, 128))
-
-        elif color == 'brown':
-            return self._rgb_serializer((139, 69, 19))      
-        
-    
-    def _rgb_serializer(self, rgb):
-        """
-        Сериализует входящий rgb в значени от 0 до 1
-        """
-        r, g, b = rgb
-        return(round(r/255, 2), round(g/255, 2), round(b/255, 2))
-        
-        
-    def _is_valid_rgb(self, color):   
-        """
-        Проверяет валидность введенных данных rgb
-        """     
-        try:
-            r, g, b = color.split()
-        except:
-            return False
-
-        if not all((
-            str(r).isdigit(),
-            str(g).isdigit(),
-            str(b).isdigit())):
-            return False
-
-        if not all((
-            0 <= int(r) <= 255,
-            0 <= int(g) <= 255,
-            0 <= int(b) <= 255)):
-            return False
-        
-        return True
+                
     
 class FontFormattingTable(BaseTable):
 
@@ -267,7 +270,44 @@ class FontFormattingTable(BaseTable):
             return 'error cell'
         except ValueError as e:
             return 'error cell'
+        
+    def set_font_color(self, cell, color):
+        if cell in 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя\
+                        АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ': # если указаны русские симолы не пропускать
+            return False
 
+        color = self._get_color(color)
+
+        format_ = gf.CellFormat(textFormat=gf.TextFormat(foregroundColor=gf.Color(*color)))
+
+        try:
+            gf.format_cell_range(self.sheet, cell, format_)
+            return True
+        except APIError as e:
+            return False
+        except ValueError as e:
+            return False
+        
+    def set_font_color_rgb(self, cell, rgb):
+        if not self._is_valid_rgb(rgb):
+            return 'error rgb'
+        
+        if cell in 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя\
+                        АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ': # если указаны русские симолы не пропускать
+            return 'error cell'
+
+        r, g, b = rgb.split()
+        rgb = self._rgb_serializer((int(r), int(g), int(b)))
+
+        format_ = gf.CellFormat(textFormat=gf.TextFormat(foregroundColor=gf.Color(*rgb))) # форматирование по цвету
+
+        try:
+            gf.format_cell_range(self.sheet, cell, format_)
+            return 'Suc'
+        except APIError as e:
+            return 'error cell'
+        except ValueError as e:
+            return 'error cell'
 
 
     def _is_valid_size(self, size):

@@ -37,4 +37,5 @@ class FontFormattingTableForm(StatesGroup):
     cell = State()
     size = State()
     color = State()
+    rgb = State()
     table_url = State()
