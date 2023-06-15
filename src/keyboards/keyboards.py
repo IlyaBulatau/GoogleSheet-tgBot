@@ -80,10 +80,27 @@ def create_kb_for_font_upgrade():
     kb = InlineKeyboardBuilder()
 
     buttons = [
-        InlineKeyboardButton(text='Изменить шрифт', callback_data=CALLBACK['font_style']),
+        InlineKeyboardButton(text='Изменить стиль шрифта', callback_data=CALLBACK['font_style']),
         InlineKeyboardButton(text='Изменить цвет текста', callback_data=CALLBACK['font_color']),
     ]
 
     kb.row(*buttons, width=1)
+
+    return kb.as_markup()
+
+def create_kb_with_text_styles():
+
+    kb = InlineKeyboardBuilder()
+
+    buttons = [
+        InlineKeyboardButton(text='Жирный', callback_data=CALLBACK['bold']),
+        InlineKeyboardButton(text='Georgia', callback_data=CALLBACK['georgia']),
+        InlineKeyboardButton(text='Italic', callback_data=CALLBACK['italic']),
+        InlineKeyboardButton(text='Verdana', callback_data=CALLBACK['verdana']),
+        InlineKeyboardButton(text='Зачеркнутый', callback_data=CALLBACK['strikethrough']),
+        InlineKeyboardButton(text='Подчеркнутый', callback_data=CALLBACK['underline']),
+    ]
+
+    kb.row(*buttons, width=2)
 
     return kb.as_markup()

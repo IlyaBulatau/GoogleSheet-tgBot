@@ -20,8 +20,19 @@ class ActionTableForm(StatesGroup):
 
 class FormattingTableForm(StatesGroup):
     formatting = State()
-    font = State()
+    table_url = State()
+
+class ColorFormattingTableForm(StatesGroup):
+    formatting = State()
     cell = State()
     values = State()
     rgb = State()
+    table_url = State()
+
+
+class FontFormattingTableForm(StatesGroup):
+    formatting = State()
+    font = State()
+    style = State()
+    cell = State()
     table_url = State()

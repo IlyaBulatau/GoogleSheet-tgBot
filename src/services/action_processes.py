@@ -216,4 +216,9 @@ class FontFormattingTable(BaseTable):
     def __init__(self, url: str, data: str = None):
         super().__init__(url, data)
 
+    def set_font_style(self, cell, style):
+        format = gf.CellFormat(textFormat=gf.TextFormat(fontFamily=style.split('_')[1]))
+
+        gf.format_cell_range(self.sheet, cell, format)
+
     
