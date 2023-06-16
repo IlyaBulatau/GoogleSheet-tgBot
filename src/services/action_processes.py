@@ -17,6 +17,11 @@ class BaseTable:
         self.data: str = data # данные
         self.sheet: Worksheet = self.table.sheet1 # обьект первого листа
 
+    def _cell_have_ru_symbols(self, cell):
+        if cell in 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя\
+                        АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ': # если указаны русские симолы не пропускать
+            return True
+
     def _is_valid_rgb(self, color):   
         """
         Проверяет валидность введенных данных rgb
@@ -138,7 +143,7 @@ class ActionTable(BaseTable):
 
     def rename_table(self, name):
         """
-        Менет имя паблицы
+        Меняет имя таблицы
         """
         self.table.update_title(name)
 
@@ -179,8 +184,7 @@ class ColorFormattingTable(BaseTable):
     def set_color(self, cell, color):
         
         color = self._get_color(color)
-        if cell in 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя\
-                        АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ': # если указаны русские симолы не пропускать
+        if self._cell_have_ru_symbols(cell):
             return False
         
         format_ = gf.CellFormat(backgroundColor=gf.Color(*color)) # форматирование по цвету
@@ -196,8 +200,7 @@ class ColorFormattingTable(BaseTable):
         if not self._is_valid_rgb(rgb):
             return 'error rgb'
         
-        if cell in 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя\
-                        АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ': # если указаны русские симолы не пропускать
+        if self._cell_have_ru_symbols(cell):
             return 'error cell'
 
         r, g, b = rgb.split()
@@ -220,8 +223,7 @@ class FontFormattingTable(BaseTable):
         super().__init__(url, data)
 
     def set_font_style(self, cell, style):
-        if cell in 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя\
-                        АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ': # если указаны русские симолы не пропускать
+        if self._cell_have_ru_symbols(cell):
             return False
 
         style = self._style_serialier(style)
@@ -254,8 +256,7 @@ class FontFormattingTable(BaseTable):
 
 
     def set_font_size(self, cell, size):
-        if cell in 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя\
-                        АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ': # если указаны русские симолы не пропускать
+        if self._cell_have_ru_symbols(cell):
             return 'error cell'
         
         if not self._is_valid_size(size):
@@ -272,8 +273,7 @@ class FontFormattingTable(BaseTable):
             return 'error cell'
         
     def set_font_color(self, cell, color):
-        if cell in 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя\
-                        АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ': # если указаны русские симолы не пропускать
+        if self._cell_have_ru_symbols(cell):
             return False
 
         color = self._get_color(color)
@@ -292,8 +292,7 @@ class FontFormattingTable(BaseTable):
         if not self._is_valid_rgb(rgb):
             return 'error rgb'
         
-        if cell in 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя\
-                        АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ': # если указаны русские симолы не пропускать
+        if self._cell_have_ru_symbols(cell):
             return 'error cell'
 
         r, g, b = rgb.split()

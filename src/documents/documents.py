@@ -4,6 +4,15 @@ TEXT = {
 Для начала работы введите /work',
 }
 
+VIP = {
+    'day': 'get_vip_in_day',
+    'week': 'get_vip_in_week',
+    'forever': 'get_vip_in_forever',
+    'text': 'VIP статус позволет пользоватся ботом круглосуточно(без Vipa бот не доступен по выходным),\
+а так же использовать весь возможный функционал бота\n\n\
+Хотите VIP?'
+}
+
 CALLBACK = {
     'create_table': 'create_new_table',
     'mod_table': 'modification_table',

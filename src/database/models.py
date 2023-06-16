@@ -18,7 +18,7 @@ class User(Base, BaseModel):
     tg_id = db.Column(db.BigInteger(), unique=True, nullable=False)
     username = db.Column(db.String(), nullable=False)
     email = db.Column(db.String(), nullable=True)
-    coints = db.Column(db.Integer(), nullable=True)
+    vip = db.Column(db.Boolean(), default=False)
     tablse = relationship('Table', backref='user')
 
     def save_email(self, **kwargs):

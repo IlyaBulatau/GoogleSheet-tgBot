@@ -4,7 +4,7 @@ from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 
 from database.models import User, Table
-from documents.documents import TEXT
+from documents.documents import TEXT, VIP
 from handlers.fsm.states import WorkForm
 from keyboards import keyboards
 
@@ -33,6 +33,10 @@ async def procces_command_work(message: Message, state: FSMContext):
     """
     await state.set_state(WorkForm.method)
     await message.answer(text='Выберите что будем делать', reply_markup=keyboards.create_kb_for_choice_methods_work())
+
+@router.message(Command(commands=['vip']))
+async def process_command_vip(message: Message):
+    await message.answer(text=VIP['text'], reply_markup=keyboards.create_kb_for_vip())
 
 @router.message(Command(commands=['tables']))
 async def process_command_tables(message: Message):

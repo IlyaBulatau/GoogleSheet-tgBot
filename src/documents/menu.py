@@ -6,19 +6,23 @@ def set_menu():
     commands = SetMyCommands(commands=[
         BotCommand(
         command='start',
-        description='greeting'
+        description='В начало'
         ),
         BotCommand(
         command='work',
-        description='start working'
+        description='Начать работу'
         ),
         BotCommand(
         command='tables',
-        description='get my tables'
+        description='Мои таблицы'
+        ),
+        BotCommand(
+        command='vip',
+        description='Получить VIP'
         ),
         BotCommand(
         command='cancel',
-        description='end process',
+        description='Завершить процесс',
         )
     ])
     return commands

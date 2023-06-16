@@ -1,7 +1,7 @@
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.types import InlineKeyboardButton
 
-from documents.documents import CALLBACK
+from documents.documents import CALLBACK, VIP
 
 
 def create_kb_for_choice_methods_work():
@@ -103,5 +103,19 @@ def create_kb_with_text_styles():
     ]
 
     kb.row(*buttons, width=2)
+
+    return kb.as_markup()
+
+def create_kb_for_vip():
+
+    kb = InlineKeyboardBuilder()
+
+    buttons = [
+        InlineKeyboardButton(text='На день', callback_data=VIP['day']),
+        InlineKeyboardButton(text='На месяц', callback_data=VIP['week']),
+        InlineKeyboardButton(text='Навсегда', callback_data=VIP['forever']),
+    ]
+
+    kb.row(*buttons, width=1)
 
     return kb.as_markup()
