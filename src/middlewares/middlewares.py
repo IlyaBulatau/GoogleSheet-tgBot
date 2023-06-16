@@ -8,6 +8,8 @@ from database.models import User
 from config import config
 from documents.documents import CALLBACK
 
+from datetime import datetime
+
 
 class UploadDocumentMiddlware(BaseMiddleware):
 
@@ -82,22 +84,52 @@ class FontLimitAccessMiddleware(BaseMiddleware):
             event: CallbackQuery,
             data: Dict[str, Any]):
 
-            user = User.get_user_by_id(event.from_user.id)
-            admin_id = config.ADMIN_ID
-            callback = event.data
-            fonts = [
-                CALLBACK['georgia'],
-                CALLBACK['verdana'],
-                CALLBACK['strikethrough']
-            ]
+        user = User.get_user_by_id(event.from_user.id)
+        admin_id = config.ADMIN_ID
+        callback = event.data
+        fonts = [
+            CALLBACK['georgia'],
+            CALLBACK['verdana'],
+            CALLBACK['strikethrough']
+        ]
 
-            flag_font = get_flag(handler=data, name='flag_font')
+        flag_font = get_flag(handler=data, name='flag_font')
 
-            if flag_font:
-                if not user.vip:
-                    if callback in fonts:
-                        return await event.answer(text='Доступно только c VIP', show_alert=False)
-            
-            return await handler(event, data)
+        if flag_font:
+            if not user.vip:
+                if callback in fonts:
+                    return await event.answer(text='Доступно только c VIP', show_alert=False)
+        
+        return await handler(event, data)
 
  
+class WorkTimeLimitAccessMiddleware(BaseMiddleware):
+
+    async def __call__(
+            self,
+            handler: Callable[[Message, Dict[str, Any]], Awaitable[Any]],
+            event: Message,
+            data: Dict[str, Any]):
+
+        user = User.get_user_by_id(event.from_user.id)
+        admin_id = config.ADMIN_ID
+
+        flag_get_vip = get_flag(handler=data, name='flag_get_vip')
+        
+        if flag_get_vip:
+            return await handler(event, data)
+
+        if not user.vip:
+            if int(datetime.today().weekday()) not in (0, 1, 2, 3, 4):
+                return event.answer(text='Бот не работает по выходным\n\nДля использования бота круглосуточно\nприобретите VIP статус /vip')
+
+        return await handler(event, data)
+    
+class DeleteMessageAfterTimeMiddleware(BaseMiddleware):
+    
+    async def __call__(
+            self,
+            handler: Callable[[Message, Dict[str, Any]], Awaitable[Any]],
+            event: Message,
+            data: Dict[str, Any]):
+        ...

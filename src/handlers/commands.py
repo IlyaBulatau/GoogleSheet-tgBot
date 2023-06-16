@@ -34,7 +34,7 @@ async def procces_command_work(message: Message, state: FSMContext):
     await state.set_state(WorkForm.method)
     await message.answer(text='Выберите что будем делать', reply_markup=keyboards.create_kb_for_choice_methods_work())
 
-@router.message(Command(commands=['vip']))
+@router.message(Command(commands=['vip']), flags={'flag_get_vip': 'flag_get_vip'})
 async def process_command_vip(message: Message):
     await message.answer(text=VIP['text'], reply_markup=keyboards.create_kb_for_vip())
 

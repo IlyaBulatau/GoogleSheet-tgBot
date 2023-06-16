@@ -6,6 +6,7 @@ import asyncio
 from config import BaseConfig
 from database.connect import create_database, session, engine
 from database.models import Base, User, Table
+from middlewares.middlewares import WorkTimeLimitAccessMiddleware
 
 from handlers.commands import router
 from handlers.fsm.process import router as fsm_router
@@ -25,6 +26,8 @@ async def main():
 
     bot = Bot(token=BaseConfig.TOKEN)
     ds = Dispatcher(storage=storage)
+    
+    ds.message.middleware(WorkTimeLimitAccessMiddleware())
 
     ds.include_routers(router, 
                         fsm_router,
