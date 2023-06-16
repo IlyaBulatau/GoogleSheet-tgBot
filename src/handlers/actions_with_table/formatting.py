@@ -3,6 +3,7 @@ from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
 from aiogram.filters import Text
 
+from middlewares.middlewares import LimitAccessMiddleware, ColorLimitAccessMiddleware, FontLimitAccessMiddleware
 from documents.documents import CALLBACK, INSTRUCTION
 from handlers.fsm.states import ActionTableForm, ColorFormattingTableForm, FontFormattingTableForm, FormattingTableForm
 from services.action_processes import ColorFormattingTable, FontFormattingTable
@@ -10,6 +11,9 @@ from keyboards.keyboards import create_kb_for_table_action, create_kb_for_table_
 
 
 router = Router()
+router.callback_query.middleware(LimitAccessMiddleware())
+router.callback_query.middleware(ColorLimitAccessMiddleware())
+router.callback_query.middleware(FontLimitAccessMiddleware())
 
 @router.callback_query(Text(text=CALLBACK['formatting']))
 async def process_formatting_table(callback: CallbackQuery, state: FSMContext):
@@ -83,7 +87,7 @@ async def process_get_font_color_choice(callback: CallbackQuery, state: FSMConte
     await callback.message.answer(text='Выберите цвет', reply_markup=create_kb_for_choice_color())
     await callback.answer()
 
-@router.callback_query(Text(text=CALLBACK['rgb']), FontFormattingTableForm.color)
+@router.callback_query(Text(text=CALLBACK['rgb']), FontFormattingTableForm.color, flags={'flag_vip': 'flag_vip'})
 async def process_get_rgb_color_for_font(callback: CallbackQuery, state: FSMContext):
     await state.update_data(color=callback.data)
     await state.set_state(FontFormattingTableForm.rgb)
@@ -99,7 +103,7 @@ async def process_set_rgb_color_in_text(message: Message, state:FSMContext):
     await message.answer(text=INSTRUCTION['Color text'])
 
 
-@router.callback_query(Text(startswith='color_'), FontFormattingTableForm.color)
+@router.callback_query(Text(startswith='color_'), FontFormattingTableForm.color, flags={'flag_color': 'flag_color'})
 async def process_get_color_for_text(callback: CallbackQuery, state: FSMContext):
     await state.update_data(color=callback.data)
     await state.set_state(FontFormattingTableForm.cell)
@@ -116,7 +120,7 @@ async def process_get_size(message: Message, state: FSMContext):
     await message.answer(text=INSTRUCTION['Font style'])
 
 
-@router.callback_query(Text(startswith='style_'), FontFormattingTableForm.style)
+@router.callback_query(Text(startswith='style_'), FontFormattingTableForm.style, flags={'flag_font': 'flag_font'})
 async def process_get_font_style_choice(callback: CallbackQuery, state: FSMContext):
     await state.update_data(style=callback.data)
     await state.set_state(FontFormattingTableForm.cell)
@@ -215,7 +219,7 @@ async def process_get_cell_for_color(message: Message, state: FSMContext):
     await message.answer(text='Выберите цвет', reply_markup=create_kb_for_choice_color())
 
 
-@router.callback_query(Text(text=CALLBACK['rgb']), ColorFormattingTableForm.values)
+@router.callback_query(Text(text=CALLBACK['rgb']), ColorFormattingTableForm.values, flags={'flag_vip': 'flag_vip'})
 async def process_get_rgb_color(callback: CallbackQuery, state: FSMContext):
     """
     Принимает процесс после того как пользователь нажал "Указать в фомате RGB"
@@ -261,7 +265,7 @@ async def process_get_rgb_color(message: Message, state: FSMContext):
     await message.answer(text='Цвет изменен!')
     await message.answer('Продолжим творчество?\n\nДля возврата к изменению таблицы кнопка "Назад"\n\nДля прекращения работы /cancel', reply_markup=create_kb_for_table_formatting())
 
-@router.callback_query(Text(startswith='color_'), ColorFormattingTableForm.values)
+@router.callback_query(Text(startswith='color_'), ColorFormattingTableForm.values, flags={'flag_color': 'flag_color'})
 async def process_get_color_value(callback: CallbackQuery, state: FSMContext):
     """
     Принимает процесс после выбора цвета пользователем

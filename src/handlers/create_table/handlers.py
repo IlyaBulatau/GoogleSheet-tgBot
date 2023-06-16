@@ -22,7 +22,7 @@ async def process_get_email(message: Message, state: FSMContext):
     await message.answer(text='Как назовем таблицу?')
     
 
-@router.message(CreateTableForm.name)
+@router.message(CreateTableForm.name, flags={'upload_document_operation': 'upload_document'})
 async def process_get_name(message: Message, state: FSMContext):
     """
     Принимает процесс работы после того как пользователь

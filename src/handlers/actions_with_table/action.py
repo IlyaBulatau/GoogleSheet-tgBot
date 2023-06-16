@@ -12,7 +12,8 @@ from aiogram.fsm.context import FSMContext
 
 
 router = Router()
-router.message.middleware(LimitAccessMiddleware())
+router.callback_query.middleware(LimitAccessMiddleware())
+
 
 @router.callback_query(Text(text=CALLBACK['insert_row']), ActionTableForm.action)
 async def process_insert_row_in_table(callback: CallbackQuery, state: FSMContext):
@@ -40,7 +41,7 @@ async def process_insert_row_in_table(callback: CallbackQuery, state: FSMContext
     await callback.message.answer(text=INSTRUCTION['Use row'])
     await callback.answer()
 
-@router.callback_query(Text(text=CALLBACK['insert_row_by_index']), ActionTableForm.action)
+@router.callback_query(Text(text=CALLBACK['insert_row_by_index']), ActionTableForm.action, flags={'flag_vip': 'flag_vip'})
 async def process_insert_row_by_index_in_table(callback: CallbackQuery, state: FSMContext):
     """
     Принимает процесс после того как пользователь выбрал действия с таблицей нажав кнопку "Добавить строку по номеру строки"
@@ -94,7 +95,7 @@ async def process_set_value_in_cell(callback: CallbackQuery, state: FSMContext):
     await callback.message.answer(text=INSTRUCTION['Set value in table'][0])
     await callback.answer()
 
-@router.callback_query(Text(text=CALLBACK['rename_table']), ActionTableForm.action)
+@router.callback_query(Text(text=CALLBACK['rename_table']), ActionTableForm.action, flags={'flag_vip': 'flag_vip'})
 async def process_rename_table(callback: CallbackQuery, state: FSMContext):
     """
     Принимает процесс после того как пользователь выбрал действия с таблицей нажав кнопку "Изменить название таблицы"
@@ -133,7 +134,7 @@ async def process_append_more_rows_in_table(callback: CallbackQuery, state: FSMC
     await callback.message.answer(text=INSTRUCTION['Use rows'])
     await callback.answer()
 
-@router.callback_query(Text(text=CALLBACK['append_rows_cell']), ActionTableForm.action)
+@router.callback_query(Text(text=CALLBACK['append_rows_cell']), ActionTableForm.action, flags={'flag_vip': 'flag_vip'})
 async def process_append_more_rows_in_cell_table(callback: CallbackQuery, state: FSMContext):
     """
     Принимает процесс после того как пользователь выбрал действия с таблицей нажав кнопку "Добавить несколько строк начиная с заданной ячейки"
