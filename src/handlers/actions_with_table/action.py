@@ -3,6 +3,7 @@ from handlers.fsm.states import ActionTableForm
 from services.action_processes import ActionTable
 from keyboards.keyboards import create_kb_for_table_action
 from database.models import Table
+from middlewares.middlewares import LimitAccessMiddleware
 
 from aiogram import Router
 from aiogram.filters import Text
@@ -11,6 +12,7 @@ from aiogram.fsm.context import FSMContext
 
 
 router = Router()
+router.message.middleware(LimitAccessMiddleware())
 
 @router.callback_query(Text(text=CALLBACK['insert_row']), ActionTableForm.action)
 async def process_insert_row_in_table(callback: CallbackQuery, state: FSMContext):

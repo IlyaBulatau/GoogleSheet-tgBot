@@ -3,6 +3,7 @@ from aiogram.filters import Text
 from aiogram import Router
 from aiogram.fsm.context import FSMContext
 
+from middlewares.middlewares import UploadDocumentMiddlware
 from documents.documents import CALLBACK, CONNECT_STATUS
 from handlers.fsm.states import CreateTableForm, ModificationTableForm, ActionTableForm
 from services.create_table import create
@@ -12,7 +13,7 @@ from config import config
 from keyboards.keyboards import create_kb_for_table_action
 
 router = Router()
-
+router.message.middleware(UploadDocumentMiddlware() )
 
 @router.message(CreateTableForm.email)
 async def process_get_email(message: Message, state: FSMContext):
@@ -56,7 +57,7 @@ async def process_get_name(message: Message, state: FSMContext):
     
     await message.answer(text='Email который вы отправили не существуют\nПопробуйте заново /work')
 
-@router.message(ModificationTableForm.table_url)
+@router.message(ModificationTableForm.table_url, flags={'upload_document_operation': 'upload_document'})
 async def process_get_table_url(message: Message, state: FSMContext):
     """
     Принимает процесс работы после того как пользователь
