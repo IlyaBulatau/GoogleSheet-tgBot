@@ -48,7 +48,7 @@ async def process_get_name(message: Message, state: FSMContext):
         user = User.get_user_by_id(message.from_user.id)
         user.save_email(email=email)
         Table(url=url, user_tg_id=user.tg_id, name=str(table_name)).save()
-        await message.answer(text=f'Таблица создана\nСсылка: {url}')
+        await message.answer(text=f'Таблица создана\n🔗 Ссылка: {url}\n\nВаши таблицы можно посмотреть используя команду /tables')
 
         await state.set_state(ActionTableForm.action)
         await state.update_data(table_url=url)

@@ -17,7 +17,7 @@ async def process_get_vip_in_day(callback: CallbackQuery, bot: Bot):
     await bot.send_invoice(
         chat_id=callback.message.chat.id,
         title='VIP Статус на день',
-        description='VIP',
+        description='В течении всего периода действия VIP статуса вы сможете использовать полный функионал бота, а так же пользоватся им круглосуточно',
         payload='get_VIP',
         provider_token=config.PAY_TEST_KEY,
         currency='rub',
@@ -30,7 +30,7 @@ async def process_get_vip_in_day(callback: CallbackQuery, bot: Bot):
     await bot.send_invoice(
         chat_id=callback.message.chat.id,
         title='VIP Статус на неделю',
-        description='VIP',
+        description='В течении всего периода действия VIP статуса вы сможете использовать полный функионал бота, а так же пользоватся им круглосуточно',
         payload='get_VIP',
         provider_token=config.PAY_TEST_KEY,
         currency='rub',
@@ -44,7 +44,7 @@ async def process_get_vip_in_day(callback: CallbackQuery, bot: Bot):
     await bot.send_invoice(
         chat_id=callback.message.chat.id,
         title='VIP Статус на месяц',
-        description='VIP',
+        description='В течении всего периода действия VIP статуса вы сможете использовать полный функионал бота, а так же пользоватся им круглосуточно',
         payload='get_VIP',
         provider_token=config.PAY_TEST_KEY,
         currency='rub',
@@ -58,7 +58,7 @@ async def process_get_vip_in_day(callback: CallbackQuery, bot: Bot):
     await bot.send_invoice(
         chat_id=callback.message.chat.id,
         title='VIP Статус навсегда',
-        description='VIP',
+        description='Вы сможете использовать полный функионал бота, а так же пользоватся им круглосуточно на всегда',
         payload='get_VIP',
         provider_token=config.PAY_TEST_KEY,
         currency='rub',

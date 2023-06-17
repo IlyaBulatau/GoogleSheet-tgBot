@@ -68,7 +68,7 @@ async def process_get_style_type(callback: CallbackQuery, state: FSMContext):
     await state.update_data(font=callback.data)
     await state.set_state(FontFormattingTableForm.style)
 
-    await callback.message.answer(text='Выберите шрифт', reply_markup=create_kb_with_text_styles())
+    await callback.message.answer(text='Выберите шрифт', reply_markup=create_kb_with_text_styles(), parse_mode='HTML')
     await callback.answer()
 
 @router.callback_query(Text(text=CALLBACK['font_size']), FontFormattingTableForm.font)
@@ -152,7 +152,7 @@ async def process_get_cell_for_font(message: Message, state: FSMContext):
             await message.answer(text='Вы ввели значения ячейки не корректно попробуйте ввести еще раз\n\nДля прекращения работы /cancel щелк')
             return
 
-        await message.answer(text='Шрифт применен!')
+        await message.answer(text='✅ Шрифт применен!')
 
     elif font == CALLBACK['font_size']:
 
@@ -169,7 +169,7 @@ async def process_get_cell_for_font(message: Message, state: FSMContext):
             return
         
         else:
-            await message.answer(text='Готово!')
+            await message.answer(text='✅ Готово!')
 
     elif font == CALLBACK['font_color']:
 
@@ -199,7 +199,7 @@ async def process_get_cell_for_font(message: Message, state: FSMContext):
                 await message.answer(text='Вы ввели значения ячейки не корректно попробуйте ввести еще раз\n\nДля прекращения работы /cancel щелк')
                 return
 
-        await message.answer(text='Цвет изменен!')
+        await message.answer(text='✅ Цвет изменен!')
 
     await state.set_state(FormattingTableForm.formatting)
     await message.answer(text='Что делаем дальше?', reply_markup=create_kb_for_table_formatting())
@@ -262,7 +262,7 @@ async def process_get_rgb_color(message: Message, state: FSMContext):
             return
 
     await state.set_state(FormattingTableForm.formatting)
-    await message.answer(text='Цвет изменен!')
+    await message.answer(text='✅ Цвет изменен!')
     await message.answer('Продолжим творчество?\n\nДля возврата к изменению таблицы кнопка "Назад"\n\nДля прекращения работы /cancel', reply_markup=create_kb_for_table_formatting())
 
 @router.callback_query(Text(startswith='color_'), ColorFormattingTableForm.values, flags={'flag_color': 'flag_color'})
@@ -289,7 +289,7 @@ async def process_get_color_value(callback: CallbackQuery, state: FSMContext):
         return
     
     await state.set_state(FormattingTableForm.formatting)
-    await callback.message.answer(text='Цвет изменен!')
+    await callback.message.answer(text='✅ Цвет изменен!')
     await callback.message.answer(text='Продолжим творчество?\n\nДля возврата к изменению таблицы кнопка "Назад"\n\nДля прекращения работы /cancel', reply_markup=create_kb_for_table_formatting())
     await callback.answer()    
 

@@ -32,7 +32,7 @@ async def procces_command_work(message: Message, state: FSMContext):
     Запускает fsm для выбора
     """
     await state.set_state(WorkForm.method)
-    await message.answer(text='Выберите что будем делать', reply_markup=keyboards.create_kb_for_choice_methods_work())
+    await message.answer(text='Выберите действие', reply_markup=keyboards.create_kb_for_choice_methods_work())
 
 @router.message(Command(commands=['vip']), flags={'flag_get_vip': 'flag_get_vip'})
 async def process_command_vip(message: Message):
@@ -41,6 +41,6 @@ async def process_command_vip(message: Message):
 @router.message(Command(commands=['tables']))
 async def process_command_tables(message: Message):
     user = User.get_user_by_id(message.from_user.id)
-    response = '\n\n'.join([f'{table.name}: {table.url}'for table in user.tablse])
+    response = '\n\n'.join([f'{table.name}: 🔗 {table.url}'for table in user.tablse])
 
     await message.answer(text=response)
