@@ -16,6 +16,9 @@ class BaseConfig:
 
     ADMIN_ID = env('ADMIN_ID')
 
+    PAY_KEY = env('PAY_KEY')
+    PAY_TEST_KEY = env('PAY_TEST_KEY')
+
 class DevelopmentConfig(BaseConfig):
     
     DB_NAME = BaseConfig.env('DB_NAME_DEV')

@@ -1,6 +1,5 @@
 from aiogram import Bot, Dispatcher
-from aiogram.fsm.storage.redis import RedisStorage, Redis
-
+from aiogram.fsm.storage.redis import RedisStorage
 import asyncio
 
 from config import BaseConfig
@@ -14,20 +13,21 @@ from handlers.create_table.handlers import router as create_table_router
 from handlers.actions_with_table.action import router as action_router
 from handlers.admin.commands import router as admin_router
 from handlers.actions_with_table.formatting import router as formatting_router
+from handlers.payments.handlers import router as payments_router
 
+from utils.cache import redis
 from documents.menu import set_menu
-from config import config
 from logger.logger import logger
 
 
 async def main():
-    redis = Redis(host=config.REDIS_HOST)
     storage = RedisStorage(redis)   
 
     bot = Bot(token=BaseConfig.TOKEN)
     ds = Dispatcher(storage=storage)
     
     ds.message.middleware(WorkTimeLimitAccessMiddleware())
+    ds.callback_query.middleware(WorkTimeLimitAccessMiddleware())
 
     ds.include_routers(router, 
                         fsm_router,
@@ -35,6 +35,7 @@ async def main():
                         action_router,
                         admin_router,
                         formatting_router,
+                        payments_router,
                         )
     
     await bot(set_menu())

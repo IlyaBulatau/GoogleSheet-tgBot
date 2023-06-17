@@ -112,7 +112,8 @@ def create_kb_for_vip():
 
     buttons = [
         InlineKeyboardButton(text='На день', callback_data=VIP['day']),
-        InlineKeyboardButton(text='На месяц', callback_data=VIP['week']),
+        InlineKeyboardButton(text='На неделю', callback_data=VIP['week']),
+        InlineKeyboardButton(text='На месяц', callback_data=VIP['month']),
         InlineKeyboardButton(text='Навсегда', callback_data=VIP['forever']),
     ]
 

@@ -1,3 +1,5 @@
+from aiogram.types.labeled_price import LabeledPrice
+
 TEXT = {
     'start':
     'Привет я работаю с Google таблицами\nПомогу тебе создать таблицу либо модифицировать существующую.\n\
@@ -7,6 +9,7 @@ TEXT = {
 VIP = {
     'day': 'get_vip_in_day',
     'week': 'get_vip_in_week',
+    'month': 'get_vip_in_month',
     'forever': 'get_vip_in_forever',
     'text': 'VIP статус позволет пользоватся ботом круглосуточно(без Vipa бот не доступен по выходным),\
 а так же использовать весь возможный функционал бота\n\n\
@@ -127,3 +130,16 @@ INSTRUCTION = {
 'RGB': 'Введите 3 числа от 0 до 255 через пробел в формате\n\n\
     255 255 255'
 }
+
+EXCHANGE = 100
+
+DAY_PRICE = 100
+WEEK_PRICE = 500
+MONTH_PRICE = 1500
+FOREVER_PRICE = 5000
+
+PRICES = [LabeledPrice(label='На день', amount=DAY_PRICE*EXCHANGE),
+        LabeledPrice(label='На Неделю', amount=WEEK_PRICE*EXCHANGE),
+        LabeledPrice(label='На месяц', amount=MONTH_PRICE*EXCHANGE),
+        LabeledPrice(label='Навсегда', amount=FOREVER_PRICE*EXCHANGE),
+        ]
