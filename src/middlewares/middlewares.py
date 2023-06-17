@@ -52,7 +52,7 @@ class LimitAccessMiddleware(BaseMiddleware):
         flag_vip = get_flag(handler=data, name='flag_vip')
 
         if flag_vip:
-            if not await cache.get_vip_in_hash(user_id):    
+            if not await cache.get_vip_in_hash(user_id) and admin_id == user_id:    
                 return await event.answer(text='Доступно только c VIP', show_alert=False)
         
         return await handler(event, data)
@@ -81,7 +81,7 @@ class ColorLimitAccessMiddleware(BaseMiddleware):
 
         # если пользователь нажал на кнопку цвета и у него нету ВИПа то е пропускать его
         if flag_color:
-            if not await cache.get_vip_in_hash(user_id):
+            if not await cache.get_vip_in_hash(user_id) and admin_id == user_id:
                 if callback in colors:
                     return await event.answer(text='Доступно только c VIP', show_alert=False)
             
@@ -109,7 +109,7 @@ class FontLimitAccessMiddleware(BaseMiddleware):
         flag_font = get_flag(handler=data, name='flag_font')
 
         if flag_font:
-            if not await cache.get_vip_in_hash(user_id):
+            if not await cache.get_vip_in_hash(user_id) and admin_id == user_id:
                 if callback in fonts:
                     return await event.answer(text='Доступно только c VIP', show_alert=False)
         
@@ -132,7 +132,7 @@ class WorkTimeLimitAccessMiddleware(BaseMiddleware):
         if flag_get_vip: # если пользователь запускает процесс приобретния випки
             return await handler(event, data)
 
-        if not await cache.get_vip_in_hash(user_id):
+        if not await cache.get_vip_in_hash(user_id) and admin_id == user_id:
             if int(datetime.today().weekday()) not in (0, 1, 2, 3, 4):
                     if isinstance(event, Message):
                         return event.answer(text='Бот не работает по выходным\n\nДля использования бота круглосуточно\nприобретите VIP статус /vip')
