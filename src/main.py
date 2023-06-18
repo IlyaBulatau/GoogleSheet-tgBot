@@ -48,3 +48,6 @@ if __name__ == "__main__":
     asyncio.run(main())
     session.remove()
     logger.warning('STOP BOT')
+
+# TODO - сделать мультизычность
+# TODO - переписать обращения к базе данных на асинхронные вызовы
