@@ -39,3 +39,7 @@ class FontFormattingTableForm(StatesGroup):
     color = State()
     rgb = State()
     table_url = State()
+
+class PaymentForm(StatesGroup):
+    label = State()
+    days = State()

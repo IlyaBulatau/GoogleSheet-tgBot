@@ -8,6 +8,7 @@ class BaseConfig:
     TOKEN = env('TOKEN')
     BOT_EMAIL=env('BOT_EMAIL')
     BOT_ID = env('BOT_ID')
+    BOT_URL = env('BOT_URL')
 
     _status = 'dev'
 
@@ -18,6 +19,9 @@ class BaseConfig:
 
     PAY_KEY = env('PAY_KEY')
     PAY_TEST_KEY = env('PAY_TEST_KEY')
+
+    YOOMONEY_TOKEN = env('YOOMONEY_TOKEN')
+    YOOMONEY_ID = env('YOOMONEY_ID')
 
 class DevelopmentConfig(BaseConfig):
     

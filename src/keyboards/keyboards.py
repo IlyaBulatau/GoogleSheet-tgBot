@@ -120,3 +120,16 @@ def create_kb_for_vip():
     kb.row(*buttons, width=1)
 
     return kb.as_markup()
+
+
+def create_kb_for_check_payment():
+
+    kb = InlineKeyboardBuilder()
+
+    buttons = [
+        InlineKeyboardButton(text='Проверит Оплату', callback_data='check_payment')
+    ]
+
+    kb.row(*buttons)
+
+    return kb.as_markup()

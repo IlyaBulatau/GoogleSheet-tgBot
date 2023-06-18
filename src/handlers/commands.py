@@ -7,6 +7,7 @@ from database.models import User, Table
 from documents.documents import TEXT, VIP
 from handlers.fsm.states import WorkForm
 from keyboards import keyboards
+from services.yoomoney_api.payments import api
 
 
 router = Router()
@@ -44,3 +45,4 @@ async def process_command_tables(message: Message):
     response = '\n\n'.join([f'{table.name}: 🔗 {table.url}'for table in user.tablse])
 
     await message.answer(text=response)
+
