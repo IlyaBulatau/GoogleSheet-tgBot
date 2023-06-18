@@ -122,7 +122,7 @@ async def process_get_vip_in_day(callback: CallbackQuery, state: FSMContext):
     await state.update_data(days=DAY_PRICE)
     await state.update_data(label=label)
 
-    await callback.message.answer(text=f'Перейдите по ссылку и совериште оплату\nПосле этого нажмите "Проверить оплату"\n\n{url}', reply_markup=create_kb_for_check_payment())
+    await callback.message.answer(text=f'Перейдите по ссылку и совершите оплату\nПосле этого нажмите "Проверить оплату"\n\n{url}', reply_markup=create_kb_for_check_payment())
     await callback.answer()
 
 
@@ -135,7 +135,7 @@ async def process_get_vip_in_week(callback: CallbackQuery, state: FSMContext):
     await state.update_data(days=WEEK_PRICE)
     await state.update_data(label=label)
 
-    await callback.message.answer(text=f'Перейдите по ссылку и совериште оплату\nПосле этого нажмите "Проверить оплату"\n\n{url}', reply_markup=create_kb_for_check_payment())
+    await callback.message.answer(text=f'Перейдите по ссылку и совершите оплату\nПосле этого нажмите "Проверить оплату"\n\n{url}', reply_markup=create_kb_for_check_payment())
     
     await callback.answer()
 
@@ -148,7 +148,7 @@ async def process_get_vip_in_month(callback: CallbackQuery, state: FSMContext):
     await state.update_data(days=MONTH_PRICE)
     await state.update_data(label=label)
 
-    await callback.message.answer(text=f'Перейдите по ссылку и совериште оплату\nПосле этого нажмите "Проверить оплату"\n\n{url}', reply_markup=create_kb_for_check_payment())
+    await callback.message.answer(text=f'Перейдите по ссылку и совершите оплату\nПосле этого нажмите "Проверить оплату"\n\n{url}', reply_markup=create_kb_for_check_payment())
     
     await callback.answer()
 
@@ -162,7 +162,7 @@ async def process_get_vip_in_forever(callback: CallbackQuery, state: FSMContext)
     await state.update_data(days=FOREVER_PRICE)
     await state.update_data(label=label)
 
-    await callback.message.answer(text=f'Перейдите по ссылку и совериште оплату\nПосле этого нажмите "Проверить оплату"\n\n{url}', reply_markup=create_kb_for_check_payment())
+    await callback.message.answer(text=f'Перейдите по ссылку и совершите оплату\nПосле этого нажмите "Проверить оплату"\n\n{url}', reply_markup=create_kb_for_check_payment())
     
     await callback.answer()
 
@@ -189,6 +189,6 @@ async def process_check_payment(callback: CallbackQuery, state: FSMContext):
         await callback.message.answer(text='Оплата прошла!\n\nПриступим к работе /work ?')
         await cache.add_vip_in_hash(callback.from_user.id, status, days)
     else:
-        await callback.message.answer(text='Не оплачено\n\nДл завершения процесса /cancel')
+        await callback.message.answer(text='Не оплачено\n\nДля завершения процесса /cancel')
 
     await callback.answer()

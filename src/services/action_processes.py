@@ -126,9 +126,14 @@ class ActionTable(BaseTable):
         self.sheet.append_rows(data, table_range='A1')
     
     def append_rows_by_cell(self, cell):
-        data = self._serialiazer_for_rows()
-        self.sheet.append_rows(data, table_range=cell)
-    
+        try:
+            data = self._serialiazer_for_rows()
+            self.sheet.append_rows(data, table_range=cell)
+            return True
+        except:
+            return False
+
+
     def set_value_in_cell(self, cell, value):
         """
         Вставляет значения в ячейку

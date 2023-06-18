@@ -127,7 +127,7 @@ def create_kb_for_check_payment():
     kb = InlineKeyboardBuilder()
 
     buttons = [
-        InlineKeyboardButton(text='Проверит Оплату', callback_data='check_payment')
+        InlineKeyboardButton(text='Проверит оплату', callback_data='check_payment')
     ]
 
     kb.row(*buttons)

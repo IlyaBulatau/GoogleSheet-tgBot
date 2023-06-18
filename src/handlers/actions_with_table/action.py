@@ -72,6 +72,7 @@ async def process_get_index(message: Message, state: FSMContext):
         
         succsessfull = table.delete_rows(index)
         if not succsessfull:
+            await state.set_state(ActionTableForm.index)
             await message.answer(text='Вы ввели числа не корректно\nПопробуйте ввести еще раз\n\nДля завершения процесса шелкните /cancel')
             return
 
@@ -277,11 +278,13 @@ async def process_add_row_in_table(message: Message, state: FSMContext):
         return
 
     elif action == CALLBACK['append_rows_cell']:
-        table.append_rows_by_cell(cell)
-
-        await message.answer(text="✅ Таблица изменена!")
-        await message.answer(text='Продолжим?\nДля выхода из процесса щелкните /cancel', reply_markup=create_kb_for_table_action())
-        await state.set_state(ActionTableForm.action)
-        return
-
-
+        succssesfull = table.append_rows_by_cell(cell)
+        if succssesfull:
+            await message.answer(text="✅ Таблица изменена!")
+            await message.answer(text='Продолжим?\nДля выхода из процесса щелкните /cancel', reply_markup=create_kb_for_table_action())
+            await state.set_state(ActionTableForm.action)
+            return
+        else:
+            await state.set_state(ActionTableForm.cell)
+            await message.answer(text='Вы ввели номер ячейки не корректно\nПопробуйте еще раз\n\nДля завершения процесса щелкните /cancel')
+            return
