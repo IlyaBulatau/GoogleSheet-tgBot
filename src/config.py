@@ -10,7 +10,7 @@ class BaseConfig:
     BOT_ID = env('BOT_ID')
     BOT_URL = env('BOT_URL')
 
-    _status = 'dev'
+    _status = 'prod'
 
     EMAIL_ADRESS = env('EMAIL_ADRESS')
     EMAIL_PASSWORD = env('EMAIL_PASSWORD')
@@ -27,13 +27,20 @@ class DevelopmentConfig(BaseConfig):
     
     DB_NAME = BaseConfig.env('DB_NAME_DEV')
     DB_LOGIN = BaseConfig.env('DB_LOGIN_DEV')
-    DB_PASSWORD = BaseConfig.env('DB_pASSWORD_DEV')
+    DB_PASSWORD = BaseConfig.env('DB_PASSWORD_DEV')
     DB_HOST = BaseConfig.env('DB_HOST_DEV')
     DB_URL = f'postgresql+psycopg2://{DB_LOGIN}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}'
 
     REDIS_HOST = BaseConfig.env('REDIS_HOST_DEV')
 
 class ProductConfig(BaseConfig):
-    ...
+    
+    DB_NAME = BaseConfig.env('DB_NAME_PROD')
+    DB_LOGIN = BaseConfig.env('DB_LOGIN_PROD')
+    DB_PASSWORD = BaseConfig.env('DB_PASSWORD_PROD')
+    DB_HOST = BaseConfig.env('DB_HOST_PROD')
+    DB_URL = f'postgresql+psycopg2://{DB_LOGIN}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}'
+
+    REDIS_HOST = BaseConfig.env('REDIS_HOST_PROD')
 
 config = DevelopmentConfig if BaseConfig._status == 'dev' else ProductConfig
