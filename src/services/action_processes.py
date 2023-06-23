@@ -2,7 +2,6 @@ from gspread import Worksheet, client as cl
 from gspread.client import Spreadsheet
 from gspread.exceptions import IncorrectCellLabel, APIError
 import gspread_formatting as gf
-from string import ascii_letters
 
 from services.client import client
 
@@ -110,6 +109,9 @@ class ActionTable(BaseTable):
         self.sheet.append_row(data)
     
     def insert_row_by_index(self, index):
+        """
+        Вставляет строку по номеру строки
+        """
         data = self._serialazer_for_row()
         try:
             self.sheet.insert_row(data, int(index))
@@ -118,14 +120,23 @@ class ActionTable(BaseTable):
             return False
             
     def insert_rows_in_table(self):
+        """
+        Вставляет несколько строк в начало таблицы
+        """
         data = self._serialiazer_for_rows()
         self.sheet.insert_rows(data)
 
     def append_rows_in_table(self):
+        """
+        Вставляет несколько строк в конец таблицы
+        """
         data = self._serialiazer_for_rows()
         self.sheet.append_rows(data, table_range='A1')
     
     def append_rows_by_cell(self, cell):
+        """
+        Вставляет несколько строк в премужеток значений
+        """
         try:
             data = self._serialiazer_for_rows()
             self.sheet.append_rows(data, table_range=cell)
@@ -153,7 +164,10 @@ class ActionTable(BaseTable):
         self.table.update_title(name)
 
     def delete_rows(self, index):
-        index = self._serializer_index(index)
+        """
+        Удаляет данные из ячейки либо диапазона ячеек
+        """
+        index = self.is_valid_index(index)
         if isinstance(index, int):
             self.sheet.delete_rows(index)
             return True
@@ -164,14 +178,27 @@ class ActionTable(BaseTable):
         return False
 
     def _serialazer_for_row(self):
+        """
+        Сереализует входящий текст от пользоватедя в список слов для вставки в ячейки
+
+        Для одной строки
+        """
         result = [item.replace('_', ' ') for item in self.data.split()]
         return result
     
     def _serialiazer_for_rows(self):
+        """
+        Сереализует входящий текст от пользоватедя в список слов для вставки в ячейки
+        
+        Для нескольких строк
+        """
         result = [[word.replace('_', ' ') for word in row.split()]for row in self.data.split('\n')]
         return result
     
-    def _serializer_index(self, index):
+    def is_valid_index(self, index):
+        """
+        Проверяет что введенные данные - это номер(а) ячейки
+        """
         if str(index).isdigit():
             return int(index)
         try:
@@ -182,12 +209,18 @@ class ActionTable(BaseTable):
     
 
 class ColorFormattingTable(BaseTable):
+    """
+    Класс для действий связанных с изменением цвета ячейки
+    """
 
     def __init__(self, url: str, data: str = None):
         super().__init__(url, data)
 
     def set_color(self, cell, color):
-        
+        """
+        Устанавливает выбранный из предложенных цветов для ячейки
+        """
+
         color = self._get_color(color)
         if self._cell_have_ru_symbols(cell):
             return False
@@ -202,6 +235,9 @@ class ColorFormattingTable(BaseTable):
             return False
         
     def set_color_rgb(self, cell, rgb):
+        """
+        Устанавливает выбранный пользователем в rgb формате цвет для ячейки
+        """
         if not self._is_valid_rgb(rgb):
             return 'error rgb'
         
@@ -223,11 +259,17 @@ class ColorFormattingTable(BaseTable):
                 
     
 class FontFormattingTable(BaseTable):
+    """
+    Класс для действий связанных с изменение текста в таблице
+    """
 
     def __init__(self, url: str, data: str = None):
         super().__init__(url, data)
 
     def set_font_style(self, cell, style):
+        """
+        Устанавливает тип шрифта для ячейки
+        """
         if self._cell_have_ru_symbols(cell):
             return False
 
@@ -261,6 +303,9 @@ class FontFormattingTable(BaseTable):
 
 
     def set_font_size(self, cell, size):
+        """
+        Устанавливает размер текста для ячейки
+        """
         if self._cell_have_ru_symbols(cell):
             return 'error cell'
         
@@ -278,6 +323,9 @@ class FontFormattingTable(BaseTable):
             return 'error cell'
         
     def set_font_color(self, cell, color):
+        """
+        Устанавливает цвет текста из предложенных для ячейки
+        """
         if self._cell_have_ru_symbols(cell):
             return False
 
@@ -294,6 +342,9 @@ class FontFormattingTable(BaseTable):
             return False
         
     def set_font_color_rgb(self, cell, rgb):
+        """
+        Устанавливает цвет текста указанный в формате rgb пользователем для ячейки
+        """
         if not self._is_valid_rgb(rgb):
             return 'error rgb'
         
@@ -315,12 +366,17 @@ class FontFormattingTable(BaseTable):
 
 
     def _is_valid_size(self, size):
+        """
+        Валидация данных размера для текста
+        """
         if str(size).isdigit():
             return True
         return False
 
 
     def _style_serialier(self, style):
+        """
+        Достает из коллбека тип шрифта выбранный пользователем
+        """
         style = style.split('_')[1]
-
         return style

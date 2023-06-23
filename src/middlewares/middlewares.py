@@ -4,7 +4,6 @@ from aiogram.types import TelegramObject, Message, CallbackQuery
 from aiogram.utils.chat_action import ChatActionSender
 from typing import Awaitable, Callable, Any, Dict
 
-from database.models import User
 from config import config
 from documents.documents import CALLBACK
 from utils.cache import cache
@@ -117,6 +116,9 @@ class FontLimitAccessMiddleware(BaseMiddleware):
 
  
 class WorkTimeLimitAccessMiddleware(BaseMiddleware):
+    """
+    Ограничивает время работы бота по выходным для юзеров без ВИП статуса
+    """
 
     async def __call__(
             self,

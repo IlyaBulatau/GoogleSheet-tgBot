@@ -15,6 +15,15 @@ from handlers.fsm.states import PaymentForm
 
 router = Router()
 
+############################################################################################################
+    #                                                                                               #
+    #                    Система оплаты с помощью Aiogram                                           #
+    #                                                                                               #
+    #                                                                                               #
+    #                                                                                               #
+############################################################################################################
+
+
 
 # @router.callback_query(Text(text=VIP['day']), flags={'flag_get_vip': 'flag_get_vip'})
 # async def process_get_vip_in_day(callback: CallbackQuery, bot: Bot):
@@ -107,7 +116,7 @@ router = Router()
 
 ############################################################################################################
     #                                                                                               #
-    #               Система оплаты с помощью YooMoneyAPI + FSM                                      #
+    #                    Система оплаты с помощью YooMoneyAPI                                       #
     #                                                                                               #
     #                                                                                               #
     #                                                                                               #
@@ -169,6 +178,11 @@ async def process_get_vip_in_forever(callback: CallbackQuery, state: FSMContext)
 
 @router.callback_query(Text(text='check_payment'), PaymentForm.label, flags={'flag_get_vip': 'flag_get_vip'})
 async def process_check_payment(callback: CallbackQuery, state: FSMContext):
+    """
+    Проверяет прошла ли оплата
+
+    Если прошла то добавляет юзера в кэш с таймером на удаления в зависимости на сколько дней юзер купил ВИП статус
+    """
     data = await state.get_data()
     label = data.get('label', None)
     days = data.get('days', None)
