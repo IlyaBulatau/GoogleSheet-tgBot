@@ -16,7 +16,7 @@ class User(Base, BaseModel):
 
     id = db.Column(db.BigInteger(), primary_key=True)
     tg_id = db.Column(db.BigInteger(), unique=True, nullable=False)
-    username = db.Column(db.String(), nullable=False)
+    username = db.Column(db.String(), nullable=False, default='Not have username')
     email = db.Column(db.String(), nullable=True)
     vip = db.Column(db.Boolean(), default=False)
     tablse = relationship('Table', backref='user')
@@ -31,7 +31,8 @@ class User(Base, BaseModel):
         try:
             super(User, self).save()
             logger.warning(f'ADD NEW USER WITH USERNAME: {self.username}, ID: {self.tg_id}')
-        except:
+        except Exception as e:
+            logger.critical(f'Error {e} DONT SAVE USER')
             session.rollback()
 
     @classmethod
@@ -57,7 +58,8 @@ class Table(Base, BaseModel):
             try:
                 super(Table, self).save()
                 logger.warning(f'USER BY ID {self.user_tg_id} CREATE NEW TABLE WITH URL {self.url}')
-            except:
+            except Exception as e:
+                logger.critical(f'ERROR CREATE TABLE WITH USER ID {self.user_tg_id}')
                 session.rollback()
 
     @classmethod

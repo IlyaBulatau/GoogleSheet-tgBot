@@ -8,6 +8,7 @@ from documents.documents import TEXT, VIP
 from handlers.fsm.states import WorkForm
 from keyboards import keyboards
 from services.yoomoney_api.payments import api
+from logger.logger import logger
 
 
 router = Router()
@@ -28,11 +29,12 @@ async def process_command_cancel(message: Message, state: FSMContext):
 @router.message(Command(commands=['work']))
 async def procces_command_work(message: Message, state: FSMContext):
     """
-    Комадна для старка работы
+    Комадна для старта работы
     Предлагает выбор между - Создание таблицы или Модификации имеющейся
     Запускает fsm для выбора
     """
     await state.set_state(WorkForm.method)
+    logger.warning(f'USER WITH ID {message.from_user.id} START WORK')
     await message.answer(text='Выберите действие', reply_markup=keyboards.create_kb_for_choice_methods_work())
 
 @router.message(Command(commands=['vip']), flags={'flag_get_vip': 'flag_get_vip'})

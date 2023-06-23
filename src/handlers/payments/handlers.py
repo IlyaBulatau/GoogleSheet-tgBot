@@ -202,7 +202,8 @@ async def process_check_payment(callback: CallbackQuery, state: FSMContext):
     if payment:
         await callback.message.answer(text='Оплата прошла!\n\nПриступим к работе /work ?')
         await cache.add_vip_in_hash(callback.from_user.id, status, days)
+        logger.critical(f'User with ID {callback.from_user.id} BUY VIP STATUS')
     else:
         await callback.message.answer(text='Не оплачено\n\nДля завершения процесса /cancel')
-
+        logger.critical(f'User with ID {callback.from_user.id} DONT CAN BUY VIP STATUS')
     await callback.answer()
